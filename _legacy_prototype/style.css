@@ -1,0 +1,404 @@
+/* Core Variables */
+:root {
+    --bg-color: #F9F9F9;
+    --primary-color: #003366;
+    --error-color: #D32F2F;
+    --text-primary: #1A1A1A;
+    --text-secondary: #555555;
+    --white: #FFFFFF;
+    --border-color: #E0E0E0;
+    --focus-border: 3px solid var(--primary-color);
+    
+    /* Status Colors */
+    --status-complete: #34C759;
+    --status-partial: #FFCC00;
+    --status-unanswered: #FF3B30;
+}
+
+/* Base Reset & Typography */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: #ECECEC; /* Darker outside the mobile frame */
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Mobile-First Layout constraints */
+.app-container {
+    width: 100%;
+    max-width: 430px; /* iPhone Pro Max width approximation */
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh; /* For mobile browsers */
+    position: relative;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Typography Scale */
+h1, h2, .heading { font-size: 22px; font-weight: bold; line-height: 1.2; }
+.message-bubble { font-size: 19px; font-weight: normal; line-height: 1.6; }
+body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
+.persistent-label { font-size: 16px; font-weight: bold; line-height: 1.4; }
+
+/* Drawer Styles */
+.drawer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.side-drawer {
+    position: absolute;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: var(--white);
+    z-index: 50;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.side-drawer.open {
+    transform: translateX(280px);
+}
+
+.drawer-header {
+    padding: 24px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--primary-color);
+}
+
+.drawer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.drawer-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.complete { background-color: var(--status-complete); }
+.status-dot.partial { background-color: var(--status-partial); }
+.status-dot.unanswered { background-color: var(--status-unanswered); }
+
+/* Progress Tracking */
+.progress-container {
+    background-color: var(--white);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.progress-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.progress-bar-track {
+    width: 100%;
+    height: 16px;
+    background-color: #E0E0E0;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 12px;
+}
+
+.progress-segment {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-segment.complete { background-color: var(--status-complete); }
+.progress-segment.partial { background-color: var(--status-partial); }
+.progress-segment.unanswered { background-color: var(--status-unanswered); }
+
+.progress-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    font-weight: bold;
+}
+
+.progress-legend {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Trust Badge */
+.trust-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background-color: rgba(0, 51, 102, 0.05);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.trust-badge .icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Chat Area */
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.message {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.avatar-container {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Analyzing/Listening State Animation */
+.avatar-pulse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    z-index: 1;
+    opacity: 0;
+    transform: scale(1);
+    animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+.message-bubble {
+    background-color: var(--white);
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    max-width: 85%;
+}
+
+/* User Message */
+.user-message {
+    flex-direction: row-reverse;
+}
+.user-message .message-bubble {
+    background-color: #E6F0FA;
+    border-color: #C0D8F0;
+    color: var(--primary-color);
+}
+
+/* Input Area */
+.input-area {
+    background-color: var(--white);
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 10;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.persistent-label {
+    color: var(--text-primary);
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.user-input {
+    width: 100%;
+    min-height: 56px; /* Touch target minimum */
+    padding: 12px 56px 12px 16px; /* Extra right padding for the mic */
+    border: 1px solid #999;
+    border-radius: 8px;
+    background-color: var(--white);
+    outline: none;
+    transition: border 0.2s ease;
+    -webkit-appearance: none;
+}
+
+.user-input:focus {
+    border: var(--focus-border);
+}
+
+.user-input.error {
+    border: 3px solid var(--error-color);
+}
+
+/* Voice Button */
+.voice-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: all 0.2s ease;
+}
+
+.voice-btn .voice-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.voice-btn.recording {
+    color: var(--error-color);
+    background-color: rgba(211, 47, 47, 0.1);
+    animation: voicePulse 1.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes voicePulse {
+    0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+}
+
+/* Primary Action Button */
+.primary-action {
+    width: 100%;
+    min-height: 56px; /* Touch target minimum */
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.primary-action:active:not(:disabled) {
+    background-color: #002244;
+}
+
+.primary-action:disabled {
+    background-color: #CCCCCC;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+/* Utility for icons inside buttons or messages */
+.icon-solid {
+    fill: currentColor;
+}
