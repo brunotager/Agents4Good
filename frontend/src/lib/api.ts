@@ -155,20 +155,29 @@ async function getMockTurnResponse(userMessage: string, currentPhase: FlowState)
 
     case 'WARMUP_MAP':
       return {
-        agentMessage: "You can use your voice for the rest of this. Tap the microphone icon and say \"Hello\".",
+        agentMessage: "We've collected all the necessary initial information. Are you ready to submit your application for final processing?",
         synthesisLabel: "Dr. Smith has been added to your file.",
-        nextPhase: 'WARMUP_VOICE',
+        nextPhase: 'APPLICATION_REVIEW',
         progressUpdate: { complete: 75, partial: 15 },
-        inputHint: { label: 'Test Microphone', placeholder: 'Tap mic to test', disabled: false }
+        inputHint: { label: 'Submit Application', placeholder: 'e.g. Yes', disabled: false }
       };
 
-    case 'WARMUP_VOICE':
+    case 'APPLICATION_REVIEW':
       return {
-        agentMessage: "We are ready to begin the formal application.",
-        synthesisLabel: "Perfect! Your voice is set up.",
-        nextPhase: 'WARMUP_VOICE',
+        agentMessage: "Your application has been successfully submitted! A representative will review it and contact you shortly.",
+        synthesisLabel: "Application Complete",
+        nextPhase: 'APPLICATION_COMPLETE',
         progressUpdate: { complete: 100, partial: 0 },
-        inputHint: { label: 'Application Ready', placeholder: '', disabled: true }
+        inputHint: { label: 'Application Submitted', placeholder: '', disabled: true }
+      };
+
+    case 'APPLICATION_COMPLETE':
+      return {
+        agentMessage: "You have already completed the application.",
+        synthesisLabel: "Application Complete",
+        nextPhase: 'APPLICATION_COMPLETE',
+        progressUpdate: { complete: 100, partial: 0 },
+        inputHint: { label: 'Application Submitted', placeholder: '', disabled: true }
       };
 
     default:

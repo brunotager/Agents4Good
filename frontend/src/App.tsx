@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { MobileLayout } from './components/MobileLayout';
 import { WelcomeScreen } from './screens/WelcomeScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
+import { ResultsScreen } from './screens/ResultsScreen';
 
-type ScreenState = 'welcome' | 'onboarding';
+type ScreenState = 'welcome' | 'onboarding' | 'results';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenState>('welcome');
@@ -14,7 +15,10 @@ function App() {
         <WelcomeScreen onStart={() => setCurrentScreen('onboarding')} />
       )}
       {currentScreen === 'onboarding' && (
-        <OnboardingScreen />
+        <OnboardingScreen onComplete={() => setCurrentScreen('results')} />
+      )}
+      {currentScreen === 'results' && (
+        <ResultsScreen />
       )}
     </MobileLayout>
   );

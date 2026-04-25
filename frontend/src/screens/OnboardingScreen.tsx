@@ -8,7 +8,11 @@ import { SignaturePad } from '../components/SignaturePad';
 import { FlowState, SECTION_ORDER, getActiveSection } from '../lib/phases';
 import { startSession, sendTurn } from '../lib/api';
 
-export function OnboardingScreen() {
+interface OnboardingScreenProps {
+  onComplete?: () => void;
+}
+
+export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
   const [flowState, setFlowState] = useState<FlowState>('PRE_FLIGHT_WORKING');
@@ -23,6 +27,7 @@ export function OnboardingScreen() {
   
   const [isRecording, setIsRecording] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(true); // Start analyzing while booting
+  const [loadingCategory, setLoadingCategory] = useState<'long' | 'completeness' | 'next'>('next');
   const [errorState, setErrorState] = useState<string | null>(null);
 
   // Initialize Session
@@ -86,10 +91,8 @@ export function OnboardingScreen() {
     if (isInputDisabled) return;
     if (isRecording) {
       setIsRecording(false);
-      setInputPlaceholder(inputPlaceholder);
     } else {
       setIsRecording(true);
-      setInputPlaceholder('Listening...');
       setInputValue('');
       if (navigator.vibrate) navigator.vibrate(50);
     }
@@ -106,12 +109,32 @@ export function OnboardingScreen() {
         setMessages(prev => [...prev, newUserMsg]);
     }
     
+    // Determine loading category based on answer context
+    let nextCategory: 'long' | 'completeness' | 'next' = 'next';
+    if (textToSubmit.length > 50) {
+      nextCategory = 'long';
+    } else if (progress.partial > 0) {
+      nextCategory = 'completeness';
+    }
+    
+    setLoadingCategory(nextCategory);
+    
     setInputValue('');
     setIsAnalyzing(true);
     setErrorState(null);
 
+    const minDelay = nextCategory === 'next' ? 1500 : 3500;
+
     try {
-      const data = await sendTurn(sessionToken, textToSubmit, flowState);
+      const [data] = await Promise.all([
+        sendTurn(sessionToken, textToSubmit, flowState),
+        new Promise(resolve => setTimeout(resolve, minDelay))
+      ]);
+      
+      if (data.nextPhase === 'APPLICATION_COMPLETE' && onComplete) {
+        onComplete();
+        return;
+      }
       
       setFlowState(data.nextPhase);
       setProgress(data.progressUpdate);
@@ -173,7 +196,7 @@ export function OnboardingScreen() {
         />
         
         <div className="chat-container">
-          <ChatArea messages={messages} isAnalyzing={isAnalyzing} />
+          <ChatArea messages={messages} isAnalyzing={isAnalyzing} loadingCategory={loadingCategory} />
           
           {errorState && (
             <div className="error-retry" onClick={() => submitTurn(messages[messages.length-1].text as string)}>
@@ -192,7 +215,7 @@ export function OnboardingScreen() {
           <div className="input-area-inner">
             <VoiceInputGroup 
               value={inputValue}
-              placeholder={inputPlaceholder}
+              placeholder={isRecording ? 'Listening...' : inputPlaceholder}
               label={inputLabel}
               isRecording={isRecording}
               onChange={handleInputChange}
