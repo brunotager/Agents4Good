@@ -24,25 +24,86 @@
 
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: #ECECEC; /* Darker outside the mobile frame */
+    background-color: var(--bg-color);
     color: var(--text-primary);
     display: flex;
     justify-content: center;
     min-height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex: 1;
 }
 
 /* Mobile-First Layout constraints */
 .app-container {
     width: 100%;
-    max-width: 430px; /* iPhone Pro Max width approximation */
     background-color: var(--bg-color);
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Desktop row layout */
     height: 100vh;
     height: 100dvh; /* For mobile browsers */
     position: relative;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     overflow: hidden;
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    min-height: 0;
+}
+
+.welcome-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Desktop Layout Overrides */
+@media (min-width: 768px) {
+    .drawer-overlay {
+        display: none !important;
+    }
+    .side-drawer {
+        position: static !important;
+        transform: none !important;
+        left: auto !important;
+        border-right: 1px solid var(--border-color);
+        box-shadow: none !important;
+        min-width: 280px !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        height: 100% !important;
+    }
+    .menu-btn {
+        display: none !important;
+    }
 }
 
 /* Typography Scale */
@@ -284,6 +345,7 @@ body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
     color: var(--text-primary);
     box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     max-width: 85%;
+    white-space: pre-wrap;
 }
 
 /* User Message */
@@ -303,8 +365,16 @@ body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
     border-top: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    gap: 16px;
     z-index: 10;
+}
+
+.input-area-inner {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .input-group {
@@ -414,7 +484,8 @@ body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
 .welcome-screen {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex: 1;
+    width: 100%;
     background-color: var(--bg-color);
 }
 
@@ -505,4 +576,25 @@ body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
     font-size: 18px;
     font-family: 'Georgia', serif; /* A bit more formal for signature */
     outline: none;
+}
+
+.synthesis-crumb {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
+}
+
+.error-retry {
+    padding: 12px 24px;
+    background-color: #FFF3F3;
+    color: #D8000C;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid #FFBABA;
+    border-bottom: 1px solid #FFBABA;
+    margin-bottom: 16px;
 }
