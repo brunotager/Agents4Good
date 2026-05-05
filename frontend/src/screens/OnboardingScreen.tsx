@@ -9,13 +9,13 @@ import { FlowState, SECTION_ORDER, getActiveSection } from '../lib/phases';
 import { startSession, sendTurn } from '../lib/api';
 
 interface OnboardingScreenProps {
-  onComplete?: () => void;
+  onComplete?: (sessionToken: string) => void;
 }
 
 export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
-  const [flowState, setFlowState] = useState<FlowState>('PRE_FLIGHT_WORKING');
+  const [flowState, setFlowState] = useState<FlowState>('STEP1_SGA');
   const [progress, setProgress] = useState({ complete: 0, partial: 0, unanswered: 100 });
   
   const [messages, setMessages] = useState<Message[]>([]);
@@ -26,7 +26,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [isInputDisabled, setIsInputDisabled] = useState(true);
   
   const [isRecording, setIsRecording] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(true); // Start analyzing while booting
+  const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [loadingCategory, setLoadingCategory] = useState<'long' | 'completeness' | 'next'>('next');
   const [errorState, setErrorState] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
         if (data.sessionToken) setSessionToken(data.sessionToken);
         
         setFlowState(data.nextPhase);
-        setProgress(data.progressUpdate);
+        setProgress({ ...data.progressUpdate, unanswered: 100 - data.progressUpdate.complete - data.progressUpdate.partial });
         setInputLabel(data.inputHint.label);
         setInputPlaceholder(data.inputHint.placeholder);
         setIsInputDisabled(data.inputHint.disabled);
@@ -76,8 +76,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     return { id: label, label, status };
   });
 
-  const handleNavigate = (id: string) => {
-    // Pure UI jump logic for now
+  const handleNavigate = (_id: string) => {
     toggleDrawer();
   };
 
@@ -101,15 +100,12 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const submitTurn = async (textToSubmit: string) => {
     if (!sessionToken) return;
     
-    // Add user message to UI immediately
     const newUserMsg: Message = { id: Date.now().toString(), sender: 'user', text: textToSubmit.startsWith('__SIGNED__') ? 'Signed: [Electronic Signature]' : textToSubmit };
     
-    // Don't duplicate if we're retrying
     if (!errorState) {
         setMessages(prev => [...prev, newUserMsg]);
     }
     
-    // Determine loading category based on answer context
     let nextCategory: 'long' | 'completeness' | 'next' = 'next';
     if (textToSubmit.length > 50) {
       nextCategory = 'long';
@@ -118,26 +114,20 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     }
     
     setLoadingCategory(nextCategory);
-    
     setInputValue('');
     setIsAnalyzing(true);
     setErrorState(null);
 
-    const minDelay = nextCategory === 'next' ? 1500 : 3500;
-
     try {
-      const [data] = await Promise.all([
-        sendTurn(sessionToken, textToSubmit, flowState),
-        new Promise(resolve => setTimeout(resolve, minDelay))
-      ]);
+      const data = await sendTurn(sessionToken, textToSubmit, flowState);
       
       if (data.nextPhase === 'APPLICATION_COMPLETE' && onComplete) {
-        onComplete();
+        onComplete(sessionToken);
         return;
       }
       
       setFlowState(data.nextPhase);
-      setProgress(data.progressUpdate);
+      setProgress({ ...data.progressUpdate, unanswered: 100 - data.progressUpdate.complete - data.progressUpdate.partial });
       setInputLabel(data.inputHint.label);
       setInputPlaceholder(data.inputHint.placeholder);
       setIsInputDisabled(data.inputHint.disabled);

@@ -1,0 +1,78 @@
+{
+  "description": "SSA Medical-Vocational Guidelines (Grid Rules). Used at Step 5 to determine if a claimant who cannot return to past work can adjust to other work in the national economy. Decision depends on age category, education level, and Residual Functional Capacity (RFC).",
+  "age_categories": {
+    "younger_18_44": "Ages 18-44: Age is generally not a significant factor.",
+    "younger_45_49": "Ages 45-49: Age begins to be a factor, especially with limited education and unskilled work history.",
+    "approaching_advanced_50_54": "Ages 50-54: Age significantly limits the types of work an individual can adjust to.",
+    "advanced_55_59": "Ages 55-59: The SSA considers the vocational adversity of age much more seriously. Many directed decisions favor the claimant.",
+    "close_to_retirement_60_plus": "Ages 60+: Very favorable. Most claimants with even moderate limitations are approved."
+  },
+  "education_levels": {
+    "none": "No formal education",
+    "some_high_school": "Some high school but no diploma",
+    "hs_diploma_ged": "High school diploma or GED",
+    "some_college": "Some college or vocational training",
+    "college_degree": "College degree (4-year)",
+    "advanced_degree": "Advanced degree (Master's, Doctorate, Professional)"
+  },
+  "rfc_levels": {
+    "sedentary": "Can lift up to 10 lbs, stand/walk 2 hours in an 8-hour day, sit 6 hours.",
+    "light": "Can lift up to 20 lbs occasionally, 10 lbs frequently. Requires standing/walking 6 hours.",
+    "medium": "Can lift up to 50 lbs occasionally, 25 lbs frequently.",
+    "heavy": "Can lift up to 100 lbs occasionally, 50 lbs frequently.",
+    "very_heavy": "Can lift over 100 lbs."
+  },
+  "rules": [
+    { "age": "close_to_retirement_60_plus", "education": "none", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.01" },
+    { "age": "close_to_retirement_60_plus", "education": "some_high_school", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.02" },
+    { "age": "close_to_retirement_60_plus", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.03" },
+    { "age": "close_to_retirement_60_plus", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": true, "decision": "approve", "rule_id": "201.04" },
+    { "age": "close_to_retirement_60_plus", "education": "some_college", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.05" },
+    { "age": "close_to_retirement_60_plus", "education": "some_college", "rfc": "sedentary", "transferable_skills": true, "decision": "consider", "rule_id": "201.06" },
+    { "age": "close_to_retirement_60_plus", "education": "college_degree", "rfc": "sedentary", "transferable_skills": true, "decision": "consider", "rule_id": "201.07" },
+    { "age": "close_to_retirement_60_plus", "education": "none", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.01" },
+    { "age": "close_to_retirement_60_plus", "education": "some_high_school", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.02" },
+    { "age": "close_to_retirement_60_plus", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.03" },
+    { "age": "close_to_retirement_60_plus", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": true, "decision": "consider", "rule_id": "202.04" },
+    { "age": "close_to_retirement_60_plus", "education": "some_college", "rfc": "light", "transferable_skills": true, "decision": "deny", "rule_id": "202.05" },
+
+    { "age": "advanced_55_59", "education": "none", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.09" },
+    { "age": "advanced_55_59", "education": "some_high_school", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.10" },
+    { "age": "advanced_55_59", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.11" },
+    { "age": "advanced_55_59", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": true, "decision": "consider", "rule_id": "201.12" },
+    { "age": "advanced_55_59", "education": "some_college", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.13" },
+    { "age": "advanced_55_59", "education": "some_college", "rfc": "sedentary", "transferable_skills": true, "decision": "consider", "rule_id": "201.14" },
+    { "age": "advanced_55_59", "education": "none", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.09" },
+    { "age": "advanced_55_59", "education": "some_high_school", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.10" },
+    { "age": "advanced_55_59", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": false, "decision": "consider", "rule_id": "202.11" },
+    { "age": "advanced_55_59", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": true, "decision": "deny", "rule_id": "202.12" },
+    { "age": "advanced_55_59", "education": "some_college", "rfc": "light", "transferable_skills": true, "decision": "deny", "rule_id": "202.13" },
+
+    { "age": "approaching_advanced_50_54", "education": "none", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.17" },
+    { "age": "approaching_advanced_50_54", "education": "some_high_school", "rfc": "sedentary", "transferable_skills": false, "decision": "approve", "rule_id": "201.18" },
+    { "age": "approaching_advanced_50_54", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": false, "decision": "consider", "rule_id": "201.19" },
+    { "age": "approaching_advanced_50_54", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": true, "decision": "deny", "rule_id": "201.20" },
+    { "age": "approaching_advanced_50_54", "education": "some_college", "rfc": "sedentary", "transferable_skills": true, "decision": "deny", "rule_id": "201.21" },
+    { "age": "approaching_advanced_50_54", "education": "none", "rfc": "light", "transferable_skills": false, "decision": "approve", "rule_id": "202.09b" },
+    { "age": "approaching_advanced_50_54", "education": "some_high_school", "rfc": "light", "transferable_skills": false, "decision": "consider", "rule_id": "202.10b" },
+    { "age": "approaching_advanced_50_54", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": false, "decision": "deny", "rule_id": "202.11b" },
+
+    { "age": "younger_45_49", "education": "none", "rfc": "sedentary", "transferable_skills": false, "decision": "consider", "rule_id": "201.25" },
+    { "age": "younger_45_49", "education": "some_high_school", "rfc": "sedentary", "transferable_skills": false, "decision": "deny", "rule_id": "201.26" },
+    { "age": "younger_45_49", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": false, "decision": "deny", "rule_id": "201.27" },
+    { "age": "younger_45_49", "education": "none", "rfc": "light", "transferable_skills": false, "decision": "deny", "rule_id": "202.17" },
+
+    { "age": "younger_18_44", "education": "none", "rfc": "sedentary", "transferable_skills": false, "decision": "consider", "rule_id": "201.29" },
+    { "age": "younger_18_44", "education": "some_high_school", "rfc": "sedentary", "transferable_skills": false, "decision": "deny", "rule_id": "201.30" },
+    { "age": "younger_18_44", "education": "hs_diploma_ged", "rfc": "sedentary", "transferable_skills": false, "decision": "deny", "rule_id": "201.31" },
+    { "age": "younger_18_44", "education": "none", "rfc": "light", "transferable_skills": false, "decision": "deny", "rule_id": "202.21" },
+    { "age": "younger_18_44", "education": "some_high_school", "rfc": "light", "transferable_skills": false, "decision": "deny", "rule_id": "202.22" },
+    { "age": "younger_18_44", "education": "hs_diploma_ged", "rfc": "light", "transferable_skills": false, "decision": "deny", "rule_id": "202.23" }
+  ],
+  "notes": [
+    "When no exact rule match exists, the decision defaults to 'consider' (case-by-case evaluation).",
+    "Medium, heavy, and very_heavy RFC levels generally result in denial at Step 5 because many jobs exist at those exertion levels.",
+    "Transferable skills from past work can move a 'consider' to a 'deny' if those skills transfer to lighter work.",
+    "These rules are simplified representations. Actual SSA adjudication involves additional nuance and ALJ discretion."
+  ]
+}

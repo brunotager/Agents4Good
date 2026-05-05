@@ -8,6 +8,12 @@ type ScreenState = 'welcome' | 'onboarding' | 'results';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenState>('welcome');
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+
+  const handleOnboardingComplete = (token: string) => {
+    setSessionToken(token);
+    setCurrentScreen('results');
+  };
 
   return (
     <MobileLayout>
@@ -15,10 +21,10 @@ function App() {
         <WelcomeScreen onStart={() => setCurrentScreen('onboarding')} />
       )}
       {currentScreen === 'onboarding' && (
-        <OnboardingScreen onComplete={() => setCurrentScreen('results')} />
+        <OnboardingScreen onComplete={handleOnboardingComplete} />
       )}
       {currentScreen === 'results' && (
-        <ResultsScreen />
+        <ResultsScreen sessionToken={sessionToken} />
       )}
     </MobileLayout>
   );

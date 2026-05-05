@@ -1,6 +1,12 @@
+// ──────────────────────────────────────────────────────────────
+// SSA-3373-BK Function Report Schema + 5-Step Evaluation Fields
+// ──────────────────────────────────────────────────────────────
+
 export const ssa3373Schema = {
   type: "object",
   properties: {
+
+    // ── META ──────────────────────────────────────────────────
     meta: {
       type: "object",
       properties: {
@@ -10,6 +16,62 @@ export const ssa3373Schema = {
       }
     },
 
+    // ──────────────────────────────────────────────────────────
+    // STEP 1: SUBSTANTIAL GAINFUL ACTIVITY (SGA)
+    // ──────────────────────────────────────────────────────────
+    section_sga: {
+      type: "object",
+      properties: {
+        currently_working: { type: "boolean" },
+        work_type: {
+          type: "string",
+          enum: ["full_time", "part_time", "self_employed", "gig_work", "none"]
+        },
+        hours_per_week: { type: "number" },
+        monthly_earnings: { type: "number" },
+        employer_name: { type: "string" },
+        last_date_worked: { type: "string" },     // ISO date
+        reason_stopped_working: { type: "string" },
+        is_blind: { type: "boolean" },
+        // Computed by rule engine — not user-supplied
+        sga_threshold: { type: "number" },         // current year threshold
+        sga_pass: { type: "boolean" }               // earnings < threshold
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // STEP 2: SEVERITY & DURATION
+    // ──────────────────────────────────────────────────────────
+    section_severity: {
+      type: "object",
+      properties: {
+        condition_duration_months: {
+          type: ["number", "string"],              // number or "indefinite"
+        },
+        condition_expected_to_last_12_months: { type: "boolean" },
+        condition_expected_to_result_in_death: { type: "boolean" },
+        basic_work_activities_affected: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: [
+              "walking", "standing", "sitting", "lifting", "carrying",
+              "pushing", "pulling", "reaching", "handling",
+              "seeing", "hearing", "speaking",
+              "understanding", "remembering", "concentrating",
+              "interacting_with_others", "adapting_to_changes"
+            ]
+          }
+        },
+        severity_explanation: { type: "string" },
+        // Computed by rule engine
+        severity_pass: { type: "boolean" }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // SECTION A: GENERAL INFORMATION (original SSA-3373-BK)
+    // ──────────────────────────────────────────────────────────
     section_a_general: {
       type: "object",
       properties: {
@@ -51,6 +113,9 @@ export const ssa3373Schema = {
       }
     },
 
+    // ──────────────────────────────────────────────────────────
+    // SECTION B: CONDITIONS (original SSA-3373-BK)
+    // ──────────────────────────────────────────────────────────
     section_b_conditions: {
       type: "object",
       properties: {
@@ -65,6 +130,41 @@ export const ssa3373Schema = {
       }
     },
 
+    // ──────────────────────────────────────────────────────────
+    // STEP 3: BLUE BOOK LISTING MATCH
+    // ──────────────────────────────────────────────────────────
+    section_blue_book: {
+      type: "object",
+      properties: {
+        matched_listing_id: { type: "string" },       // e.g. "1.04"
+        matched_listing_name: { type: "string" },      // e.g. "Disorders of the Spine"
+        body_system: { type: "string" },               // e.g. "Musculoskeletal"
+        match_confidence: {
+          type: "string",
+          enum: ["high", "moderate", "low", "none"]
+        },
+        evidence_checklist: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              item: { type: "string" },
+              has_evidence: { type: "boolean" },
+              user_notes: { type: "string" }
+            }
+          }
+        },
+        meets_listing: {
+          type: "string",
+          enum: ["yes", "no", "partial", "unknown"]
+        },
+        recommendation: { type: "string" }             // Human-friendly recommendation
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // SECTION C: DAILY ACTIVITIES (original SSA-3373-BK)
+    // ──────────────────────────────────────────────────────────
     section_c_daily_activities: {
       type: "object",
       properties: {
@@ -202,10 +302,164 @@ export const ssa3373Schema = {
       }
     },
 
+    // ──────────────────────────────────────────────────────────
+    // SECTION D: ABILITIES (SSA-3373-BK Q20-21 — previously missing)
+    // ──────────────────────────────────────────────────────────
+    section_d_abilities: {
+      type: "object",
+      properties: {
+        affected_abilities: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: [
+              "lifting", "squatting", "bending", "standing", "reaching",
+              "walking", "sitting", "kneeling", "talking", "hearing",
+              "stair_climbing", "seeing", "memory", "completing_tasks",
+              "concentration", "understanding", "following_instructions",
+              "using_hands", "getting_along_with_others"
+            ]
+          }
+        },
+        ability_explanations: {
+          type: "object",
+          // Key = ability name, value = explanation string
+          // e.g. { "lifting": "Can only lift about 5 pounds" }
+          additionalProperties: { type: "string" }
+        },
+        dominant_hand: {
+          type: "string",
+          enum: ["right", "left"]
+        },
+        walk_distance_before_rest: { type: "string" },
+        rest_duration_before_resume: { type: "string" },
+        attention_span: { type: "string" },
+        finishes_what_started: { type: "boolean" },
+        follows_written_instructions: { type: "string" },
+        follows_spoken_instructions: { type: "string" },
+        authority_relationship: { type: "string" },
+        fired_for_interpersonal: { type: "boolean" },
+        fired_details: { type: "string" },
+        fired_employer_name: { type: "string" },
+        handles_routine_changes: { type: "string" },
+        unusual_behaviors_or_fears: { type: "boolean" },
+        unusual_behaviors_details: { type: "string" },
+        assistive_devices: {
+          type: "array",
+          items: {
+            type: "string",
+            enum: [
+              "crutches", "walker", "wheelchair", "cane",
+              "brace_splint", "artificial_limb",
+              "hearing_aid", "glasses_contacts", "other"
+            ]
+          }
+        },
+        assistive_devices_other: { type: "string" },
+        devices_prescribed: { type: "boolean" }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // STEP 4: WORK HISTORY (for Past Relevant Work assessment)
+    // ──────────────────────────────────────────────────────────
+    section_work_history: {
+      type: "object",
+      properties: {
+        jobs_last_15_years: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              title: { type: "string" },
+              employer: { type: "string" },
+              start_date: { type: "string" },
+              end_date: { type: "string" },
+              hours_per_week: { type: "number" },
+              physical_demands: {
+                type: "string",
+                enum: ["sedentary", "light", "medium", "heavy", "very_heavy"]
+              },
+              description: { type: "string" }
+            }
+          }
+        },
+        last_date_worked: { type: "string" },
+        reason_stopped: { type: "string" },
+        // Computed by rule engine
+        highest_physical_demand: {
+          type: "string",
+          enum: ["sedentary", "light", "medium", "heavy", "very_heavy"]
+        },
+        can_return_to_past_work: { type: "boolean" }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // STEP 5: VOCATIONAL PROFILE (for Grid Rules assessment)
+    // ──────────────────────────────────────────────────────────
+    section_vocational: {
+      type: "object",
+      properties: {
+        age: { type: "number" },
+        date_of_birth: { type: "string" },
+        age_category: {
+          type: "string",
+          enum: ["younger_18_44", "younger_45_49", "approaching_advanced_50_54", "advanced_55_59", "close_to_retirement_60_plus"]
+        },
+        education_level: {
+          type: "string",
+          enum: ["none", "some_high_school", "hs_diploma_ged", "some_college", "college_degree", "advanced_degree"]
+        },
+        literacy: { type: "boolean" },
+        english_proficiency: {
+          type: "string",
+          enum: ["fluent", "limited", "none"]
+        },
+        transferable_skills: {
+          type: "array",
+          items: { type: "string" }
+        },
+        // Computed by rule engine
+        grid_rule_result: {
+          type: "string",
+          enum: ["approve", "deny", "consider"]
+        },
+        grid_rule_explanation: { type: "string" }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // MEDICATIONS & SIDE EFFECTS (SSA-3373-BK Q22)
+    // ──────────────────────────────────────────────────────────
+    section_medications: {
+      type: "object",
+      properties: {
+        takes_medications: { type: "boolean" },
+        has_side_effects: { type: "boolean" },
+        medications_with_side_effects: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              name: { type: "string" },
+              side_effects: { type: "string" }
+            }
+          }
+        }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // REMARKS (original SSA-3373-BK Section E)
+    // ──────────────────────────────────────────────────────────
     remarks: {
       type: "string"
     },
 
+    // ──────────────────────────────────────────────────────────
+    // COMPLETED BY (original SSA-3373-BK)
+    // ──────────────────────────────────────────────────────────
     completed_by: {
       type: "object",
       properties: {
@@ -213,6 +467,49 @@ export const ssa3373Schema = {
         relationship: { type: "string" },
         address: { type: "string" },
         phone: { type: "string" }
+      }
+    },
+
+    // ──────────────────────────────────────────────────────────
+    // ELIGIBILITY ASSESSMENT (computed by rule engine)
+    // ──────────────────────────────────────────────────────────
+    eligibility_assessment: {
+      type: "object",
+      properties: {
+        step1_sga: {
+          type: "string",
+          enum: ["pass", "fail", "needs_info"]
+        },
+        step2_severity: {
+          type: "string",
+          enum: ["pass", "fail", "needs_info"]
+        },
+        step3_listing: {
+          type: "string",
+          enum: ["meets", "equals", "does_not_meet", "needs_info"]
+        },
+        step4_past_work: {
+          type: "string",
+          enum: ["cannot_perform", "can_perform", "needs_info"]
+        },
+        step5_other_work: {
+          type: "string",
+          enum: ["cannot_adjust", "can_adjust", "needs_info"]
+        },
+        overall_likelihood: { type: "number" },  // 0-100
+        strength_factors: {
+          type: "array",
+          items: { type: "string" }
+        },
+        risk_factors: {
+          type: "array",
+          items: { type: "string" }
+        },
+        missing_evidence: {
+          type: "array",
+          items: { type: "string" }
+        },
+        recommendation_summary: { type: "string" }
       }
     }
   }

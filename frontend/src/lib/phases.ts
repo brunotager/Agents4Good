@@ -1,30 +1,41 @@
 export type FlowState = 
-  | 'PRE_FLIGHT_WORKING'
-  | 'PRE_FLIGHT_DURATION'
-  | 'PRE_FLIGHT_REJECT'
+  | 'STEP1_SGA'
+  | 'STEP2_SEVERITY'
+  | 'ELIGIBILITY_REJECT'
   | 'MFA_PHONE'
   | 'MFA_CODE'
   | 'MEDICAL_RELEASE'
-  | 'WARMUP_BASELINE'
-  | 'WARMUP_PAIN'
-  | 'WARMUP_MAP'
+  | 'STEP3_CONDITIONS'
+  | 'STEP3_BLUE_BOOK'
+  | 'STEP4_DEMOGRAPHICS'
+  | 'STEP4_WORK_HISTORY'
+  | 'STEP4_DAILY_ACTIVITIES'
+  | 'STEP4_ABILITIES'
+  | 'STEP5_VOCATIONAL'
+  | 'STEP5_GRID_RESULT'
   | 'APPLICATION_REVIEW'
   | 'APPLICATION_COMPLETE';
 
 export const SECTION_ORDER = [
-  'Eligibility Check',
+  'Eligibility: SGA',
+  'Eligibility: Severity',
   'Identity & Security',
   'Medical Release',
-  'Phase 1: Baseline',
-  'Phase 2: The Pain',
-  'Phase 3: The Map',
-  'Phase 4: Review & Submit'
+  'Conditions & Blue Book',
+  'Demographics & Work History',
+  'Daily Activities',
+  'Abilities (Section D)',
+  'Vocational Assessment',
+  'Review & Submit'
 ];
 
 export const VALID_PHASES: FlowState[] = [
-  'PRE_FLIGHT_WORKING', 'PRE_FLIGHT_DURATION', 'PRE_FLIGHT_REJECT', 
-  'MFA_PHONE', 'MFA_CODE', 'MEDICAL_RELEASE', 'WARMUP_BASELINE', 
-  'WARMUP_PAIN', 'WARMUP_MAP', 'APPLICATION_REVIEW', 'APPLICATION_COMPLETE'
+  'STEP1_SGA', 'STEP2_SEVERITY', 'ELIGIBILITY_REJECT',
+  'MFA_PHONE', 'MFA_CODE', 'MEDICAL_RELEASE',
+  'STEP3_CONDITIONS', 'STEP3_BLUE_BOOK',
+  'STEP4_DEMOGRAPHICS', 'STEP4_WORK_HISTORY', 'STEP4_DAILY_ACTIVITIES', 'STEP4_ABILITIES',
+  'STEP5_VOCATIONAL', 'STEP5_GRID_RESULT',
+  'APPLICATION_REVIEW', 'APPLICATION_COMPLETE'
 ];
 
 export function isFlowState(phase: any): phase is FlowState {
@@ -33,17 +44,22 @@ export function isFlowState(phase: any): phase is FlowState {
 
 export function getActiveSection(state: FlowState): string {
   switch (state) {
-    case 'PRE_FLIGHT_WORKING':
-    case 'PRE_FLIGHT_DURATION':
-    case 'PRE_FLIGHT_REJECT': return 'Eligibility Check';
+    case 'STEP1_SGA': return 'Eligibility: SGA';
+    case 'STEP2_SEVERITY':
+    case 'ELIGIBILITY_REJECT': return 'Eligibility: Severity';
     case 'MFA_PHONE':
     case 'MFA_CODE': return 'Identity & Security';
     case 'MEDICAL_RELEASE': return 'Medical Release';
-    case 'WARMUP_BASELINE': return 'Phase 1: Baseline';
-    case 'WARMUP_PAIN': return 'Phase 2: The Pain';
-    case 'WARMUP_MAP': return 'Phase 3: The Map';
+    case 'STEP3_CONDITIONS':
+    case 'STEP3_BLUE_BOOK': return 'Conditions & Blue Book';
+    case 'STEP4_DEMOGRAPHICS':
+    case 'STEP4_WORK_HISTORY': return 'Demographics & Work History';
+    case 'STEP4_DAILY_ACTIVITIES': return 'Daily Activities';
+    case 'STEP4_ABILITIES': return 'Abilities (Section D)';
+    case 'STEP5_VOCATIONAL':
+    case 'STEP5_GRID_RESULT': return 'Vocational Assessment';
     case 'APPLICATION_REVIEW':
-    case 'APPLICATION_COMPLETE': return 'Phase 4: Review & Submit';
-    default: return 'Eligibility Check';
+    case 'APPLICATION_COMPLETE': return 'Review & Submit';
+    default: return 'Eligibility: SGA';
   }
 }

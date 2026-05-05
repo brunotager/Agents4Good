@@ -1,0 +1,19 @@
+{
+  "description": "SSA Substantial Gainful Activity (SGA) thresholds by year. If monthly earnings exceed the threshold, the claimant is generally considered to be performing SGA and is not eligible for disability benefits.",
+  "thresholds": {
+    "2024": { "non_blind": 1550, "blind": 2590 },
+    "2025": { "non_blind": 1620, "blind": 2700 },
+    "2026": { "non_blind": 1620, "blind": 2700 }
+  },
+  "trial_work_period_earnings": {
+    "2024": 1110,
+    "2025": 1160,
+    "2026": 1160
+  },
+  "notes": [
+    "Non-blind SGA amounts are updated annually based on the national average wage index.",
+    "Blind SGA amounts are updated annually and are significantly higher than non-blind amounts.",
+    "Self-employed individuals are evaluated differently — by the value of their work contribution, not just net income.",
+    "The Trial Work Period allows beneficiaries to test their ability to work for up to 9 months without losing benefits."
+  ]
+}
