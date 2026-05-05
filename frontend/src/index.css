@@ -503,6 +503,30 @@ body, input { font-size: 18px; font-weight: normal; line-height: 1.5; }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Voice Coming Soon Toast */
+.voice-toast {
+    position: absolute;
+    bottom: calc(100% + 16px);
+    right: 0;
+    width: 280px;
+    background-color: #1A1A1A;
+    color: var(--white);
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    z-index: 20;
+    animation: toastSlide 3s ease-in-out forwards;
+}
+
+@keyframes toastSlide {
+    0% { opacity: 0; transform: translateY(10px); }
+    10% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
 /* Audio Wave Animation */
 .audio-wave {
     display: flex;

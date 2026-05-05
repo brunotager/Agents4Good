@@ -2,8 +2,6 @@ export type FlowState =
   | 'STEP1_SGA'
   | 'STEP2_SEVERITY'
   | 'ELIGIBILITY_REJECT'
-  | 'MFA_PHONE'
-  | 'MFA_CODE'
   | 'MEDICAL_RELEASE'
   | 'STEP3_CONDITIONS'
   | 'STEP3_BLUE_BOOK'
@@ -19,7 +17,6 @@ export type FlowState =
 export const SECTION_ORDER = [
   'Eligibility: SGA',
   'Eligibility: Severity',
-  'Identity & Security',
   'Medical Release',
   'Conditions & Blue Book',
   'Demographics & Work History',
@@ -31,7 +28,7 @@ export const SECTION_ORDER = [
 
 export const VALID_PHASES: FlowState[] = [
   'STEP1_SGA', 'STEP2_SEVERITY', 'ELIGIBILITY_REJECT',
-  'MFA_PHONE', 'MFA_CODE', 'MEDICAL_RELEASE',
+  'MEDICAL_RELEASE',
   'STEP3_CONDITIONS', 'STEP3_BLUE_BOOK',
   'STEP4_DEMOGRAPHICS', 'STEP4_WORK_HISTORY', 'STEP4_DAILY_ACTIVITIES', 'STEP4_ABILITIES',
   'STEP5_VOCATIONAL', 'STEP5_GRID_RESULT',
@@ -47,8 +44,6 @@ export function getActiveSection(state: FlowState): string {
     case 'STEP1_SGA': return 'Eligibility: SGA';
     case 'STEP2_SEVERITY':
     case 'ELIGIBILITY_REJECT': return 'Eligibility: Severity';
-    case 'MFA_PHONE':
-    case 'MFA_CODE': return 'Identity & Security';
     case 'MEDICAL_RELEASE': return 'Medical Release';
     case 'STEP3_CONDITIONS':
     case 'STEP3_BLUE_BOOK': return 'Conditions & Blue Book';

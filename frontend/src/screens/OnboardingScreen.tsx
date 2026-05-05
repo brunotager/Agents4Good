@@ -21,14 +21,14 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   
   const [inputValue, setInputValue] = useState('');
-  const [inputLabel, setInputLabel] = useState('Connecting...');
+  const [inputLabel, setInputLabel] = useState('Anna is getting ready...');
   const [inputPlaceholder, setInputPlaceholder] = useState('');
   const [isInputDisabled, setIsInputDisabled] = useState(true);
   
-  const [isRecording, setIsRecording] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [loadingCategory, setLoadingCategory] = useState<'long' | 'completeness' | 'next'>('next');
   const [errorState, setErrorState] = useState<string | null>(null);
+  const [lastRawUserText, setLastRawUserText] = useState<string>('');
 
   // Initialize Session
   useEffect(() => {
@@ -86,17 +86,6 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     }
   };
 
-  const handleVoiceClick = () => {
-    if (isInputDisabled) return;
-    if (isRecording) {
-      setIsRecording(false);
-    } else {
-      setIsRecording(true);
-      setInputValue('');
-      if (navigator.vibrate) navigator.vibrate(50);
-    }
-  };
-
   const submitTurn = async (textToSubmit: string) => {
     if (!sessionToken) return;
     
@@ -105,6 +94,9 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     if (!errorState) {
         setMessages(prev => [...prev, newUserMsg]);
     }
+    
+    // Store raw text for safe retry
+    setLastRawUserText(textToSubmit);
     
     let nextCategory: 'long' | 'completeness' | 'next' = 'next';
     if (textToSubmit.length > 50) {
@@ -161,9 +153,15 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
     submitTurn(`__SIGNED__:${signature}`);
   };
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && inputValue.trim().length > 0) {
       handleSubmit();
+    }
+  };
+
+  const handleRetry = () => {
+    if (lastRawUserText) {
+      submitTurn(lastRawUserText);
     }
   };
 
@@ -189,7 +187,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
           <ChatArea messages={messages} isAnalyzing={isAnalyzing} loadingCategory={loadingCategory} />
           
           {errorState && (
-            <div className="error-retry" onClick={() => submitTurn(messages[messages.length-1].text as string)}>
+            <div className="error-retry" onClick={handleRetry}>
               ⚠️ {errorState} <span style={{textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bold'}}>Tap to Retry</span>
             </div>
           )}
@@ -205,12 +203,11 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
           <div className="input-area-inner">
             <VoiceInputGroup 
               value={inputValue}
-              placeholder={isRecording ? 'Listening...' : inputPlaceholder}
+              placeholder={inputPlaceholder}
               label={inputLabel}
-              isRecording={isRecording}
+              disabled={isInputDisabled}
               onChange={handleInputChange}
-              onKeyPress={handleKeyPress}
-              onVoiceClick={handleVoiceClick}
+              onKeyDown={handleKeyDown}
             />
             {!isInputDisabled && (
               <StickyAction 

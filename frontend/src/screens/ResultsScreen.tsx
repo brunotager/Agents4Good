@@ -163,7 +163,7 @@ export function ResultsScreen({ sessionToken }: ResultsScreenProps) {
               </div>
             )}
 
-            <button className="primary-action" onClick={() => setStage(2)}>Submit to SSA</button>
+            <button className="primary-action" onClick={() => setStage(2)}>See What Happens Next</button>
           </div>
         )}
 
@@ -179,10 +179,12 @@ export function ResultsScreen({ sessionToken }: ResultsScreenProps) {
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
-            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '16px' }}>Thank You</h2>
+            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '16px' }}>You're Ready</h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '16px', lineHeight: '1.5' }}>
-              Your application has been securely submitted to the Social Security Administration.
-              We will be in touch with your next steps shortly.
+              This is your AI-powered eligibility assessment. In a full deployment, your completed application would be securely submitted to the Social Security Administration from here.
+            </p>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.5', marginTop: '16px', fontStyle: 'italic' }}>
+              Built by Agents4Good — making government services accessible through AI.
             </p>
           </div>
         )}

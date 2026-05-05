@@ -106,7 +106,7 @@ const PHASE_CONFIG = {
 // ── Progress calculation ──
 
 function calculateProgress(formData) {
-  const totalSections = 10;
+  const totalSections = 9;
   let complete = 0;
   let partial = 0;
 
