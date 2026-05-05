@@ -1,10 +1,10 @@
 // Vercel Serverless Function — POST /api/agent/turn
 
-const cors = require('../../_lib/cors');
-const { getSession, updateSession } = require('../../../backend/server/sessionStore');
-const { extractFields, generateResponse } = require('../../../backend/server/openRouterClient');
-const { EXTRACTION_PROMPTS, getBlueBookRecommendationPrompt } = require('../../../backend/server/agentPrompts');
-const { matchBlueBook, evaluateSGA, evaluateGridRules, getAgeCategory, determineRFC } = require('../../../backend/server/ruleEngine');
+const cors = require('../_lib/cors');
+const { getSession, updateSession } = require('../../backend/server/sessionStore');
+const { extractFields, generateResponse } = require('../../backend/server/openRouterClient');
+const { EXTRACTION_PROMPTS, getBlueBookRecommendationPrompt } = require('../../backend/server/agentPrompts');
+const { matchBlueBook, evaluateSGA, evaluateGridRules, getAgeCategory, determineRFC } = require('../../backend/server/ruleEngine');
 const {
   PHASE_CONFIG,
   calculateProgress,
@@ -13,7 +13,7 @@ const {
   buildFollowUpQuestion,
   extractSGA,
   extractSeverity
-} = require('../../../backend/server/phaseLogic');
+} = require('../../backend/server/phaseLogic');
 
 module.exports = cors(async (req, res) => {
   if (req.method !== 'POST') {

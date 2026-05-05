@@ -1,7 +1,7 @@
 // Vercel Serverless Function — GET /api/session/[token]/eligibility
 
-const cors = require('../../../_lib/cors');
-const { getEligibility } = require('../../../../backend/server/sessionStore');
+const cors = require('../../_lib/cors');
+const { getEligibility } = require('../../../backend/server/sessionStore');
 
 module.exports = cors(async (req, res) => {
   if (req.method !== 'GET') {
