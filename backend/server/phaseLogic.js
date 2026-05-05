@@ -19,7 +19,7 @@ const PHASE_CONFIG = {
     section: 'section_severity',
     requiredFields: ['condition_expected_to_last_12_months', 'basic_work_activities_affected'],
     conditionalFields: {},
-    nextPhase: 'MFA_PHONE',
+    nextPhase: 'MEDICAL_RELEASE',
     rejectPhase: 'ELIGIBILITY_REJECT',
     initialQuestion: "Is your medical condition expected to last at least 12 months, or is it indefinite?"
   },
@@ -113,7 +113,6 @@ function calculateProgress(formData) {
   const checks = [
     { section: formData.section_sga, key: 'currently_working' },
     { section: formData.section_severity, key: 'condition_expected_to_last_12_months' },
-    { section: formData.section_a_general, key: 'phone_number' },
     { section: formData.section_b_conditions, key: 'conditions', isArray: true },
     { section: formData.section_blue_book, key: 'matched_listing_id' },
     { section: formData.section_vocational, key: 'age' },
@@ -386,6 +385,31 @@ function extractSeverity(msg) {
   for (const pat of conditionPatterns) {
     const m = lower.match(pat);
     if (m) { result.severity_explanation = m[0].trim(); break; }
+  }
+  // Also try to extract any conditions mentioned during severity discussion
+  const conditionKeywords = {
+    'amputation': 'amputation', 'amputee': 'amputation', 'leg blew': 'limb loss',
+    'lost my leg': 'limb loss', 'lost my arm': 'limb loss', 'missing leg': 'limb loss',
+    'missing arm': 'limb loss', 'prosthetic': 'limb loss',
+    'back pain': 'back pain', 'chronic pain': 'chronic pain', 'fibromyalgia': 'fibromyalgia',
+    'arthritis': 'arthritis', 'ptsd': 'PTSD', 'post-traumatic': 'PTSD', 'post traumatic': 'PTSD',
+    'depression': 'depression', 'anxiety': 'anxiety disorder', 'bipolar': 'bipolar disorder',
+    'schizophren': 'schizophrenia', 'seizure': 'seizure disorder', 'epilep': 'epilepsy',
+    'diabetes': 'diabetes', 'heart': 'heart condition', 'cardiac': 'heart condition',
+    'cancer': 'cancer', 'copd': 'COPD', 'asthma': 'asthma', 'stroke': 'stroke',
+    'traumatic brain': 'traumatic brain injury', 'tbi': 'traumatic brain injury',
+    'multiple sclerosis': 'multiple sclerosis', ' ms ': 'multiple sclerosis',
+    'lupus': 'lupus', 'crohn': "Crohn's disease", 'kidney': 'kidney disease',
+    'liver': 'liver disease', 'blind': 'vision loss', 'deaf': 'hearing loss',
+    'spinal': 'spinal cord injury', 'paralyz': 'paralysis', 'paraly': 'paralysis'
+  };
+
+  const mentionedConditions = new Set();
+  for (const [keyword, condition] of Object.entries(conditionKeywords)) {
+    if (lower.includes(keyword)) mentionedConditions.add(condition);
+  }
+  if (mentionedConditions.size > 0) {
+    result._extracted_conditions = [...mentionedConditions];
   }
 
   return result;

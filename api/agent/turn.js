@@ -148,6 +148,14 @@ module.exports = cors(async (req, res) => {
       }
 
       await updateSession(token, { form_data: { [config.section]: extractedFields } });
+
+      // If severity extraction found conditions mentioned, save them forward
+      if (phase === 'STEP2_SEVERITY' && extractedFields._extracted_conditions) {
+        const existing = session.form_data.section_b_conditions?.conditions || [];
+        const merged = [...new Set([...existing, ...extractedFields._extracted_conditions])];
+        await updateSession(token, { form_data: { section_b_conditions: { conditions: merged } } });
+        delete extractedFields._extracted_conditions;
+      }
     }
 
     // Refresh session after update
