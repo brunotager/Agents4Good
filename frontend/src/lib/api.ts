@@ -36,7 +36,7 @@ export interface EligibilityResult {
   form_data: Record<string, any>;
 }
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 async function fetchWithTimeoutAndRetry(url: string, options: RequestInit, retries = 1): Promise<Response> {
   const controller = new AbortController();
