@@ -38,6 +38,23 @@ module.exports = cors(async (req, res) => {
 
     // ── Special phases that don't need LLM extraction ──
 
+    if (phase === 'MFA_PHONE') {
+      const phone = userMessage.replace(/[^\d+\-() ]/g, '').trim();
+      await updateSession(token, {
+        form_data: { section_a_general: { phone_number: phone || userMessage } },
+        current_phase: 'MFA_CODE',
+        sub_step: 0
+      });
+      const nextConfig = PHASE_CONFIG['MFA_CODE'];
+      return res.json({
+        agentMessage: nextConfig.initialQuestion,
+        synthesisLabel: "Phone number saved.",
+        nextPhase: 'MFA_CODE',
+        progressUpdate: calculateProgress(session.form_data),
+        inputHint: { label: '6-Digit Code', placeholder: 'e.g. 123456', disabled: false }
+      });
+    }
+
     if (phase === 'MFA_CODE') {
       await updateSession(token, { current_phase: 'MEDICAL_RELEASE', sub_step: 0 });
       const nextConfig = PHASE_CONFIG['MEDICAL_RELEASE'];
