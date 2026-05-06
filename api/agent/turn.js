@@ -70,13 +70,27 @@ module.exports = cors(async (req, res) => {
     if (phase === 'MEDICAL_RELEASE') {
       if (userMessage.startsWith('__SIGNED__')) {
         await updateSession(token, { current_phase: 'STEP3_CONDITIONS', sub_step: 0 });
-        const nextConfig = PHASE_CONFIG['STEP3_CONDITIONS'];
+
+        // Check if conditions were already captured during severity
+        const existingConditions = session.form_data.section_b_conditions?.conditions || [];
+        let agentMessage;
+        let inputHint;
+
+        if (existingConditions.length > 0) {
+          const conditionList = existingConditions.join(', ');
+          agentMessage = `I already have ${conditionList} noted from what you told me earlier. I want to make sure your case is as strong as possible — are there any other conditions, physical or mental, that I should include? For example, some people also deal with chronic pain, depression, or anxiety.`;
+          inputHint = { label: 'Additional Conditions', placeholder: 'e.g. PTSD, chronic pain, or "that\'s all"', disabled: false };
+        } else {
+          agentMessage = PHASE_CONFIG['STEP3_CONDITIONS'].initialQuestion;
+          inputHint = { label: 'Your Conditions', placeholder: 'e.g. Back pain, depression', disabled: false };
+        }
+
         return res.json({
-          agentMessage: nextConfig.initialQuestion,
+          agentMessage,
           synthesisLabel: "Medical Release SSA-827 signed securely.",
           nextPhase: 'STEP3_CONDITIONS',
           progressUpdate: calculateProgress(session.form_data),
-          inputHint: { label: 'Your Conditions', placeholder: 'e.g. Back pain, depression', disabled: false }
+          inputHint
         });
       }
       return res.status(400).json({ error: 'Signature expected' });
@@ -116,6 +130,33 @@ module.exports = cors(async (req, res) => {
       extractedFields = extractSGA(userMessage);
     } else if (phase === 'STEP2_SEVERITY') {
       extractedFields = extractSeverity(userMessage);
+    } else if (phase === 'STEP3_CONDITIONS') {
+      // If conditions already exist and user says "that's all", skip extraction
+      const existing = session.form_data.section_b_conditions?.conditions || [];
+      const noMore = /^(no|nope|nah|that'?s? ?(all|it|everything)|nothing else|none|just that|only that)\b/i.test(userMessage.trim());
+      if (existing.length > 0 && noMore) {
+        extractedFields = {}; // Don't overwrite — existing conditions are sufficient
+        synthesisLabel = 'Got it — moving forward with your conditions on file.';
+      } else {
+        const extractionPrompt = EXTRACTION_PROMPTS[phase];
+        if (extractionPrompt) {
+          try {
+            const raw = await extractFields(extractionPrompt, userMessage);
+            for (const [key, val] of Object.entries(raw)) {
+              if (val !== null && val !== undefined) {
+                extractedFields[key] = val;
+              }
+            }
+            // Merge with existing conditions
+            if (extractedFields.conditions && existing.length > 0) {
+              extractedFields.conditions = [...new Set([...existing, ...extractedFields.conditions])];
+            }
+          } catch (err) {
+            console.error('Extraction failed, using empty:', err.message);
+            extractedFields = {};
+          }
+        }
+      }
     } else {
       const extractionPrompt = EXTRACTION_PROMPTS[phase];
       if (extractionPrompt) {
