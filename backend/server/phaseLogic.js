@@ -388,20 +388,37 @@ function extractSeverity(msg) {
   }
   // Also try to extract any conditions mentioned during severity discussion
   const conditionKeywords = {
-    'amputation': 'amputation', 'amputee': 'amputation', 'leg blew': 'limb loss',
-    'lost my leg': 'limb loss', 'lost my arm': 'limb loss', 'missing leg': 'limb loss',
-    'missing arm': 'limb loss', 'prosthetic': 'limb loss',
+    // Limb loss — many ways people describe it
+    'amputation': 'amputation', 'amputee': 'amputation', 'amputat': 'amputation',
+    'blown off': 'limb loss', 'blew off': 'limb loss', 'blowed off': 'limb loss',
+    'cut off': 'limb loss', 'lost my leg': 'limb loss', 'lost my arm': 'limb loss',
+    'lost a leg': 'limb loss', 'lost an arm': 'limb loss', 'lost my hand': 'limb loss',
+    'missing leg': 'limb loss', 'missing arm': 'limb loss', 'missing hand': 'limb loss',
+    'no leg': 'limb loss', 'no arm': 'limb loss', 'prosthetic': 'limb loss', 'prosthes': 'limb loss',
+    // Musculoskeletal
     'back pain': 'back pain', 'chronic pain': 'chronic pain', 'fibromyalgia': 'fibromyalgia',
-    'arthritis': 'arthritis', 'ptsd': 'PTSD', 'post-traumatic': 'PTSD', 'post traumatic': 'PTSD',
+    'arthritis': 'arthritis', 'herniated': 'herniated disc', 'slipped disc': 'herniated disc',
+    'sciatica': 'sciatica', 'scoliosis': 'scoliosis', 'osteopor': 'osteoporosis',
+    // Mental health
+    'ptsd': 'PTSD', 'post-traumatic': 'PTSD', 'post traumatic': 'PTSD',
+    'the war': 'PTSD', 'combat': 'PTSD', 'veteran': 'PTSD',
     'depression': 'depression', 'anxiety': 'anxiety disorder', 'bipolar': 'bipolar disorder',
-    'schizophren': 'schizophrenia', 'seizure': 'seizure disorder', 'epilep': 'epilepsy',
+    'schizophren': 'schizophrenia', 'panic attack': 'panic disorder',
+    // Neurological
+    'seizure': 'seizure disorder', 'epilep': 'epilepsy',
+    'traumatic brain': 'traumatic brain injury', 'tbi': 'traumatic brain injury',
+    'multiple sclerosis': 'multiple sclerosis',
+    'parkinson': "Parkinson's disease", 'alzheimer': "Alzheimer's disease",
+    // Organ / systemic
     'diabetes': 'diabetes', 'heart': 'heart condition', 'cardiac': 'heart condition',
     'cancer': 'cancer', 'copd': 'COPD', 'asthma': 'asthma', 'stroke': 'stroke',
-    'traumatic brain': 'traumatic brain injury', 'tbi': 'traumatic brain injury',
-    'multiple sclerosis': 'multiple sclerosis', ' ms ': 'multiple sclerosis',
     'lupus': 'lupus', 'crohn': "Crohn's disease", 'kidney': 'kidney disease',
-    'liver': 'liver disease', 'blind': 'vision loss', 'deaf': 'hearing loss',
-    'spinal': 'spinal cord injury', 'paralyz': 'paralysis', 'paraly': 'paralysis'
+    'liver': 'liver disease',
+    // Sensory
+    'blind': 'vision loss', 'deaf': 'hearing loss', 'hearing loss': 'hearing loss',
+    // Spinal / paralysis
+    'spinal': 'spinal cord injury', 'paralyz': 'paralysis', 'paraly': 'paralysis',
+    'quadrip': 'quadriplegia', 'parapleg': 'paraplegia'
   };
 
   const mentionedConditions = new Set();
