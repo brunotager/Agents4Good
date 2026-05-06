@@ -77,8 +77,47 @@ module.exports = cors(async (req, res) => {
         let inputHint;
 
         if (existingConditions.length > 0) {
-          const conditionList = existingConditions.join(', ');
-          agentMessage = `I already have ${conditionList} noted from what you told me earlier. I want to make sure your case is as strong as possible — are there any other conditions, physical or mental, that I should include? For example, some people also deal with chronic pain, depression, or anxiety.`;
+          // Map clinical terms to human-friendly descriptions
+          const humanize = {
+            'limb loss': 'the loss of your limb',
+            'amputation': 'your amputation',
+            'back pain': 'your back pain',
+            'chronic pain': 'your chronic pain',
+            'PTSD': 'your PTSD',
+            'depression': 'your depression',
+            'anxiety disorder': 'your anxiety',
+            'heart condition': 'your heart condition',
+            'diabetes': 'your diabetes',
+            'vision loss': 'your vision loss',
+            'hearing loss': 'your hearing loss',
+            'paralysis': 'your paralysis',
+          };
+
+          // Context-aware follow-up suggestions based on what conditions were mentioned
+          const relatedSuggestions = {
+            'limb loss': 'Many people in your situation also deal with things like PTSD, phantom pain, or depression — would any of those apply to you?',
+            'amputation': 'Many people in your situation also deal with things like PTSD, phantom pain, or depression — would any of those apply to you?',
+            'back pain': 'Sometimes back issues also come with trouble sleeping, anxiety, or depression. Is any of that going on for you too?',
+            'chronic pain': 'Chronic pain often comes with difficulty sleeping, depression, or anxiety. Are you experiencing any of those?',
+            'PTSD': 'PTSD sometimes comes alongside depression, anxiety, or trouble sleeping. Do any of those affect you as well?',
+            'depression': 'Depression can sometimes come with anxiety, trouble concentrating, or difficulty sleeping. Does any of that sound familiar?',
+          };
+
+          const humanConditions = existingConditions.map(c => humanize[c] || c);
+          const conditionPhrase = humanConditions.length === 1
+            ? humanConditions[0]
+            : humanConditions.slice(0, -1).join(', ') + ' and ' + humanConditions[humanConditions.length - 1];
+
+          // Find the most relevant follow-up suggestion
+          let followUp = 'Are there any other conditions — physical or mental — that I should include to make your case as strong as possible?';
+          for (const condition of existingConditions) {
+            if (relatedSuggestions[condition]) {
+              followUp = relatedSuggestions[condition];
+              break;
+            }
+          }
+
+          agentMessage = `I know you've been dealing with ${conditionPhrase} — I have that noted. ${followUp}`;
           inputHint = { label: 'Additional Conditions', placeholder: 'e.g. PTSD, chronic pain, or "that\'s all"', disabled: false };
         } else {
           agentMessage = PHASE_CONFIG['STEP3_CONDITIONS'].initialQuestion;

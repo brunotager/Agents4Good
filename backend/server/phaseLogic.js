@@ -401,7 +401,6 @@ function extractSeverity(msg) {
     'sciatica': 'sciatica', 'scoliosis': 'scoliosis', 'osteopor': 'osteoporosis',
     // Mental health
     'ptsd': 'PTSD', 'post-traumatic': 'PTSD', 'post traumatic': 'PTSD',
-    'the war': 'PTSD', 'combat': 'PTSD', 'veteran': 'PTSD',
     'depression': 'depression', 'anxiety': 'anxiety disorder', 'bipolar': 'bipolar disorder',
     'schizophren': 'schizophrenia', 'panic attack': 'panic disorder',
     // Neurological
