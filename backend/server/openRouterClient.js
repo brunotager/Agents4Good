@@ -5,15 +5,25 @@
 
 require('dotenv').config();
 
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL_AGENT || 'nvidia/nemotron-3-super-120b-a12b:free';
-const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+// Choose LLM provider configuration based on available keys
+const isGemini = !!GEMINI_API_KEY;
+
+const API_KEY = isGemini ? GEMINI_API_KEY : OPENROUTER_API_KEY;
+const BASE_URL = isGemini
+  ? 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
+  : 'https://openrouter.ai/api/v1/chat/completions';
+const MODEL = isGemini
+  ? (process.env.GEMINI_MODEL || 'gemini-2.5-flash')
+  : (process.env.OPENROUTER_MODEL_AGENT || 'nvidia/nemotron-3-super-120b-a12b:free');
 
 async function callLLM(systemPrompt, userMessage, options = {}) {
   const { temperature = 0.3, maxTokens = 1024, jsonMode = false } = options;
 
   const body = {
-    model: OPENROUTER_MODEL,
+    model: MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage }
@@ -34,14 +44,19 @@ async function callLLM(systemPrompt, userMessage, options = {}) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-      const response = await fetch(OPENROUTER_BASE_URL, {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      };
+
+      if (!isGemini) {
+        headers['HTTP-Referer'] = 'http://localhost:8080';
+        headers['X-Title'] = 'SSD Application Agent';
+      }
+
+      const response = await fetch(BASE_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-          'HTTP-Referer': 'http://localhost:8080',
-          'X-Title': 'SSD Application Agent'
-        },
+        headers,
         body: JSON.stringify(body),
         signal: controller.signal
       });
@@ -50,20 +65,20 @@ async function callLLM(systemPrompt, userMessage, options = {}) {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`OpenRouter API error ${response.status}: ${errorBody}`);
+        throw new Error(`LLM API error ${response.status}: ${errorBody}`);
       }
 
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content;
 
       if (!content) {
-        throw new Error('Empty response from OpenRouter');
+        throw new Error('Empty response from LLM API');
       }
 
       return content;
     } catch (err) {
       lastError = err;
-      console.error(`OpenRouter attempt ${attempt + 1} failed:`, err.message);
+      console.error(`LLM API attempt ${attempt + 1} failed:`, err.message);
 
       if (attempt < maxRetries) {
         await new Promise(resolve => setTimeout(resolve, 800));

@@ -76,7 +76,7 @@ At the end, the agent computes an overall eligibility likelihood score with stre
 
 - **Node.js** ≥ 18
 - **npm** ≥ 9
-- A free [OpenRouter API key](https://openrouter.ai/keys) (no credit card required)
+- A Google [Gemini API key](https://aistudio.google.com/) (recommended) OR a free [OpenRouter API key](https://openrouter.ai/keys)
 - *(Optional)* A [Supabase](https://supabase.com) project for session persistence
 
 ### 1. Clone the repository
@@ -135,8 +135,10 @@ In **Vercel → Project → Settings → Environment Variables**, add:
 
 | Variable | Value | Required |
 |----------|-------|----------|
-| `OPENROUTER_API_KEY` | Your OpenRouter API key | ✅ |
-| `OPENROUTER_MODEL_AGENT` | `nvidia/nemotron-nano-9b-v2:free` | ✅ |
+| `GEMINI_API_KEY` | Your Google Gemini API key | ✅ (If using Gemini) |
+| `GEMINI_MODEL` | `gemini-2.5-flash` | Optional (defaults to `gemini-2.5-flash`) |
+| `OPENROUTER_API_KEY` | Your OpenRouter API key | ✅ (If using OpenRouter) |
+| `OPENROUTER_MODEL_AGENT` | `nvidia/nemotron-nano-9b-v2:free` | Optional |
 | `OPENROUTER_MODEL_VISION` | `google/gemma-4-31b-it:free` | Optional |
 | `SUPABASE_URL` | Your Supabase project URL | Optional* |
 | `SUPABASE_ANON_KEY` | Your Supabase anon/public key | Optional* |
@@ -239,7 +241,11 @@ Computes and returns the full eligibility assessment for a completed session.
 ### Backend (`.env` in `backend/server/`)
 
 ```env
-# OpenRouter — LLM API
+# Gemini API Configuration (Preferred)
+GEMINI_API_KEY=your-gemini-api-key-here
+GEMINI_MODEL=gemini-2.5-flash
+
+# OpenRouter — LLM API (Fallback)
 OPENROUTER_API_KEY=sk-or-v1-your-key-here
 OPENROUTER_MODEL_AGENT=nvidia/nemotron-nano-9b-v2:free
 OPENROUTER_MODEL_VISION=google/gemma-4-31b-it:free
