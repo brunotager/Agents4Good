@@ -7,7 +7,7 @@ const express = require('express');
 const cors = require('cors');
 
 const { createSession, getSession, updateSession, getEligibility } = require('./sessionStore');
-const { extractFields, generateResponse } = require('./openRouterClient');
+const { extractFields, generateResponse } = require('./geminiClient');
 const { EXTRACTION_PROMPTS, getQuestionPrompt, getBlueBookRecommendationPrompt, getSynthesisPrompt } = require('./agentPrompts');
 const { matchBlueBook, evaluateSGA, evaluateGridRules, getAgeCategory } = require('./ruleEngine');
 

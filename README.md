@@ -65,7 +65,7 @@ At the end, the agent computes an overall eligibility likelihood score with stre
 | `phaseLogic.js` | Phase configuration, progress calculation, synthesis labels, follow-up questions, SGA/severity extractors |
 | `ruleEngine.js` | SGA thresholds, Blue Book matching, RFC determination, Grid Rules evaluation, composite eligibility scoring |
 | `sessionStore.js` | Supabase-backed session persistence with in-memory fallback |
-| `openRouterClient.js` | LLM API client for field extraction and response generation |
+| `geminiClient.js` | Gemini API client for field extraction and response generation |
 | `agentPrompts.js` | System prompts for each conversation phase |
 
 ---
@@ -76,7 +76,7 @@ At the end, the agent computes an overall eligibility likelihood score with stre
 
 - **Node.js** ≥ 18
 - **npm** ≥ 9
-- A Google [Gemini API key](https://aistudio.google.com/) (recommended) OR a free [OpenRouter API key](https://openrouter.ai/keys)
+- A Google [Gemini API key](https://aistudio.google.com/)
 - *(Optional)* A [Supabase](https://supabase.com) project for session persistence
 
 ### 1. Clone the repository
@@ -135,11 +135,8 @@ In **Vercel → Project → Settings → Environment Variables**, add:
 
 | Variable | Value | Required |
 |----------|-------|----------|
-| `GEMINI_API_KEY` | Your Google Gemini API key | ✅ (If using Gemini) |
+| `GEMINI_API_KEY` | Your Google Gemini API key | ✅ |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Optional (defaults to `gemini-2.5-flash`) |
-| `OPENROUTER_API_KEY` | Your OpenRouter API key | ✅ (If using OpenRouter) |
-| `OPENROUTER_MODEL_AGENT` | `nvidia/nemotron-nano-9b-v2:free` | Optional |
-| `OPENROUTER_MODEL_VISION` | `google/gemma-4-31b-it:free` | Optional |
 | `SUPABASE_URL` | Your Supabase project URL | Optional* |
 | `SUPABASE_ANON_KEY` | Your Supabase anon/public key | Optional* |
 
@@ -170,7 +167,7 @@ Agents4Good/
 │   ├── phaseLogic.js             # Phase config, extractors, helpers
 │   ├── ruleEngine.js             # SSA rule evaluation engine
 │   ├── sessionStore.js           # Supabase session persistence
-│   ├── openRouterClient.js       # OpenRouter LLM API client
+│   ├── geminiClient.js           # Gemini LLM API client
 │   ├── agentPrompts.js           # System prompts per phase
 │   └── data/
 │       ├── blue_book_listings.json   # SSA Blue Book conditions
@@ -241,14 +238,9 @@ Computes and returns the full eligibility assessment for a completed session.
 ### Backend (`.env` in `backend/server/`)
 
 ```env
-# Gemini API Configuration (Preferred)
+# Gemini API Configuration
 GEMINI_API_KEY=your-gemini-api-key-here
 GEMINI_MODEL=gemini-2.5-flash
-
-# OpenRouter — LLM API (Fallback)
-OPENROUTER_API_KEY=sk-or-v1-your-key-here
-OPENROUTER_MODEL_AGENT=nvidia/nemotron-nano-9b-v2:free
-OPENROUTER_MODEL_VISION=google/gemma-4-31b-it:free
 
 # Supabase — Session persistence (optional)
 SUPABASE_URL=https://your-project.supabase.co

@@ -2,7 +2,7 @@
 
 const cors = require('../_lib/cors');
 const { getSession, updateSession } = require('../../backend/server/sessionStore');
-const { extractFields, generateResponse } = require('../../backend/server/openRouterClient');
+const { extractFields, generateResponse } = require('../../backend/server/geminiClient');
 const { EXTRACTION_PROMPTS, getBlueBookRecommendationPrompt } = require('../../backend/server/agentPrompts');
 const { matchBlueBook, evaluateSGA, evaluateGridRules, getAgeCategory, determineRFC } = require('../../backend/server/ruleEngine');
 const {

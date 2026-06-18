@@ -1,29 +1,23 @@
 // ──────────────────────────────────────────────────────────────
-// OpenRouter API Client
-// Thin wrapper for LLM calls — extraction + question generation
+// Gemini API Client
+// Thin wrapper for Gemini LLM calls — extraction + question generation
 // ──────────────────────────────────────────────────────────────
 
 require('dotenv').config();
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
-// Choose LLM provider configuration based on available keys
-const isGemini = !!GEMINI_API_KEY;
-
-const API_KEY = isGemini ? GEMINI_API_KEY : OPENROUTER_API_KEY;
-const BASE_URL = isGemini
-  ? 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
-  : 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = isGemini
-  ? (process.env.GEMINI_MODEL || 'gemini-2.5-flash')
-  : (process.env.OPENROUTER_MODEL_AGENT || 'nvidia/nemotron-3-super-120b-a12b:free');
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 
 async function callLLM(systemPrompt, userMessage, options = {}) {
   const { temperature = 0.3, maxTokens = 1024, jsonMode = false } = options;
 
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY is not configured in the environment variables.');
+  }
+
   const body = {
-    model: MODEL,
+    model: GEMINI_MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage }
@@ -44,19 +38,12 @@ async function callLLM(systemPrompt, userMessage, options = {}) {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      };
-
-      if (!isGemini) {
-        headers['HTTP-Referer'] = 'http://localhost:8080';
-        headers['X-Title'] = 'SSD Application Agent';
-      }
-
-      const response = await fetch(BASE_URL, {
+      const response = await fetch(GEMINI_BASE_URL, {
         method: 'POST',
-        headers,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${GEMINI_API_KEY}`
+        },
         body: JSON.stringify(body),
         signal: controller.signal
       });
@@ -65,26 +52,20 @@ async function callLLM(systemPrompt, userMessage, options = {}) {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        if (response.status === 400 && jsonMode && body.response_format) {
-          console.warn('⚠️ JSON mode not supported by this model. Retrying without response_format...');
-          delete body.response_format;
-          attempt--; // Retry this attempt immediately without response_format
-          continue;
-        }
-        throw new Error(`LLM API error ${response.status}: ${errorBody}`);
+        throw new Error(`Gemini API error ${response.status}: ${errorBody}`);
       }
 
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content;
 
       if (!content) {
-        throw new Error('Empty response from LLM API');
+        throw new Error('Empty response from Gemini API');
       }
 
       return content;
     } catch (err) {
       lastError = err;
-      console.error(`LLM API attempt ${attempt + 1} failed:`, err.message);
+      console.error(`Gemini API attempt ${attempt + 1} failed:`, err.message);
 
       if (attempt < maxRetries) {
         await new Promise(resolve => setTimeout(resolve, 800));
