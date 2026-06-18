@@ -348,19 +348,46 @@ function extractSGA(msg) {
   }
 
   // Try to extract earnings
-  const earningsMatch = lower.match(/\$\s*([\d,]+)\s*(a |per )?(month|mo)/);
-  if (earningsMatch) {
-    result.monthly_earnings = parseInt(earningsMatch[1].replace(/,/g, ''));
-  }
-  const weeklyMatch = lower.match(/\$\s*([\d,]+)\s*(a |per )?(week|wk)/);
-  if (weeklyMatch) {
+  const monthlyMatch = lower.match(/\$\s*([\d,]+)\s*(?:a|per|\/)?\s*(?:month|mo|monthly)\b/);
+  const weeklyMatch = lower.match(/\$\s*([\d,]+)\s*(?:a|per|\/)?\s*(?:week|wk|weekly)\b/);
+  const rawDollarMatch = lower.match(/\$\s*([\d,]+)/);
+  const plainNumberMatch = lower.match(/\b([\d,]+)\b/);
+
+  if (monthlyMatch) {
+    result.monthly_earnings = parseInt(monthlyMatch[1].replace(/,/g, ''));
+  } else if (weeklyMatch) {
     result.monthly_earnings = Math.round(parseInt(weeklyMatch[1].replace(/,/g, '')) * 4.33);
+  } else if (rawDollarMatch) {
+    result.monthly_earnings = parseInt(rawDollarMatch[1].replace(/,/g, ''));
+  } else if (plainNumberMatch) {
+    const val = parseInt(plainNumberMatch[1].replace(/,/g, ''));
+    if (val >= 100) {
+      result.monthly_earnings = val;
+    }
   }
 
-  // Try to extract hours
-  const hoursMatch = lower.match(/(\d+)\s*hours?\s*(a |per )?(week|wk)/);
-  if (hoursMatch) {
-    result.hours_per_week = parseInt(hoursMatch[1]);
+  // Try to extract hours (supporting ranges like 2-4 and not requiring "week")
+  const hoursRangeMatch = lower.match(/(\d+)\s*(?:-|to)\s*(\d+)\s*(?:hours?|hrs?)/);
+  if (hoursRangeMatch) {
+    result.hours_per_week = Math.round((parseInt(hoursRangeMatch[1]) + parseInt(hoursRangeMatch[2])) / 2);
+  } else {
+    const hoursMatch = lower.match(/(\d+)\s*(?:hours?|hrs?)/);
+    if (hoursMatch) {
+      result.hours_per_week = parseInt(hoursMatch[1]);
+    } else {
+      const rangeMatch = lower.match(/(\d+)\s*(?:-|to)\s*(\d+)/);
+      if (rangeMatch) {
+        result.hours_per_week = Math.round((parseInt(rangeMatch[1]) + parseInt(rangeMatch[2])) / 2);
+      } else {
+        const numberMatch = lower.match(/\b(\d+)\b/);
+        if (numberMatch) {
+          const num = parseInt(numberMatch[1]);
+          if (num > 0 && num <= 100) {
+            result.hours_per_week = num;
+          }
+        }
+      }
+    }
   }
 
   // Reason stopped working (if mentioned)
