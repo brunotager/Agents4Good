@@ -181,6 +181,17 @@ function buildSynthesisLabel(phase, fields) {
     if (fields.reason_stopped_working) return 'Reason for stopping work saved.';
     if (fields.last_date_worked) return 'Last date worked saved.';
     if (fields.monthly_earnings) return `Monthly earnings: $${fields.monthly_earnings}.`;
+    if (fields.hours_per_week) return `Weekly hours: ${fields.hours_per_week} hours.`;
+    if (fields.work_type) {
+      const typeLabels = {
+        full_time: 'Full-time work',
+        part_time: 'Part-time work',
+        self_employed: 'Self-employed work',
+        gig_work: 'Gig work',
+        none: 'Not working'
+      };
+      return `${typeLabels[fields.work_type] || 'Work type'} recorded.`;
+    }
     if (fields.currently_working === false) return 'Noted: not currently working.';
     if (fields.currently_working === true) return 'Noted: currently working.';
   }
