@@ -389,6 +389,19 @@
         "Psychiatric/psychological treatment records"
       ],
       "description": "Eating disorders with persistent alteration in eating or eating-related behavior that substantially changes body weight, with marked limitation in functioning."
+    },
+    {
+      "id": "1.20",
+      "body_system": "Musculoskeletal",
+      "name": "Amputation (due to any cause)",
+      "keywords": ["amputation", "lost leg", "lost arm", "lost hand", "missing leg", "missing arm", "missing hand", "limb loss", "loss of limb", "lost limb", "lost feet"],
+      "required_evidence": [
+        "Medical documentation of the amputation surgery or physical impairment",
+        "Evidence of inability to walk effectively (e.g. needing a walker, crutches, or bilateral canes) OR inability to perform fine/gross movements with an upper extremity",
+        "Prosthetic treatment records and evaluation of the effectiveness of the prosthetic device",
+        "Treatment history showing limitations persist despite rehabilitation"
+      ],
+      "description": "Amputation of one or both lower extremities, or one or both upper extremities, resulting in significant difficulty walking or performing manual tasks."
     }
   ]
 }

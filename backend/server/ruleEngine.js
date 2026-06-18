@@ -84,7 +84,7 @@ function matchBlueBook(conditions = []) {
     }
   }
 
-  if (!bestMatch || bestScore === 0) {
+  if (!bestMatch || bestScore < 2) {
     return {
       matched_listing_id: null,
       matched_listing_name: null,
@@ -96,7 +96,7 @@ function matchBlueBook(conditions = []) {
     };
   }
 
-  const confidence = bestScore >= 4 ? 'high' : bestScore >= 2 ? 'moderate' : 'low';
+  const confidence = bestScore >= 4 ? 'high' : 'moderate';
 
   return {
     matched_listing_id: bestMatch.id,
