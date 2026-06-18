@@ -1,23 +1,10 @@
 {
   "listings": [
     {
-      "id": "1.04",
-      "body_system": "Musculoskeletal",
-      "name": "Disorders of the Spine",
-      "keywords": ["back pain", "herniated disc", "spinal stenosis", "degenerative disc", "sciatica", "lumbar", "cervical", "spondylosis", "radiculopathy", "slipped disc"],
-      "required_evidence": [
-        "MRI or CT showing nerve root compression, spinal arachnoiditis, or lumbar spinal stenosis",
-        "Medical records documenting ongoing pain and limited range of motion",
-        "Evidence of neurological deficits (numbness, weakness, reflex changes)",
-        "Treatment history showing condition persists despite treatment"
-      ],
-      "description": "Disorders of the spine resulting in compromise of a nerve root or the spinal cord, with neuro-anatomic distribution of pain, limitation of motion, and motor loss."
-    },
-    {
       "id": "1.02",
-      "body_system": "Musculoskeletal",
+      "body_system": "Musculoskeletal System",
       "name": "Major Dysfunction of a Joint",
-      "keywords": ["arthritis", "joint pain", "knee replacement", "hip replacement", "osteoarthritis", "rheumatoid arthritis", "joint dysfunction", "bone on bone"],
+      "keywords": ["arthritis", "joint pain", "knee replacement", "hip replacement", "osteoarthritis", "rheumatoid arthritis", "joint dysfunction", "bone on bone", "joint stiffness"],
       "required_evidence": [
         "Imaging (X-ray, MRI) showing joint space narrowing, bony destruction, or ankylosis",
         "Documentation of inability to walk effectively or perform fine/gross movements",
@@ -27,10 +14,23 @@
       "description": "Major dysfunction of a joint due to any cause, with history of joint pain and stiffness, resulting in inability to ambulate effectively or perform fine and gross movements effectively."
     },
     {
+      "id": "1.04",
+      "body_system": "Musculoskeletal System",
+      "name": "Disorders of the Spine",
+      "keywords": ["back pain", "herniated disc", "spinal stenosis", "degenerative disc", "sciatica", "lumbar", "cervical", "spondylosis", "radiculopathy", "slipped disc", "spine injury"],
+      "required_evidence": [
+        "MRI or CT showing nerve root compression, spinal arachnoiditis, or lumbar spinal stenosis",
+        "Medical records documenting ongoing pain and limited range of motion",
+        "Evidence of neurological deficits (numbness, weakness, reflex changes)",
+        "Treatment history showing condition persists despite treatment"
+      ],
+      "description": "Disorders of the spine resulting in compromise of a nerve root or the spinal cord, with neuro-anatomic distribution of pain, limitation of motion, and motor loss."
+    },
+    {
       "id": "1.08",
-      "body_system": "Musculoskeletal",
+      "body_system": "Musculoskeletal System",
       "name": "Soft Tissue Injury",
-      "keywords": ["amputation", "soft tissue injury", "burns", "crush injury", "major trauma"],
+      "keywords": ["soft tissue injury", "burns", "crush injury", "major trauma", "muscle tear", "tendon rupture"],
       "required_evidence": [
         "Medical documentation of the injury and surgical treatment",
         "Evidence of inability to ambulate effectively or perform fine/gross movements",
@@ -39,23 +39,405 @@
       "description": "Soft tissue injury of an upper or lower extremity, trunk, or face and head, requiring surgical management within 12 months of onset."
     },
     {
+      "id": "1.20",
+      "body_system": "Musculoskeletal System",
+      "name": "Amputation (due to any cause)",
+      "keywords": ["amputation", "lost leg", "lost arm", "lost hand", "missing leg", "missing arm", "missing hand", "limb loss", "loss of limb", "lost limb", "lost feet"],
+      "required_evidence": [
+        "Medical documentation of the amputation surgery or physical impairment",
+        "Evidence of inability to walk effectively (e.g. needing a walker, crutches, or bilateral canes) OR inability to perform fine/gross movements with an upper extremity",
+        "Prosthetic treatment records and evaluation of the effectiveness of the prosthetic device",
+        "Treatment history showing limitations persist despite rehabilitation"
+      ],
+      "description": "Amputation of one or both lower extremities, or one or both upper extremities, resulting in significant difficulty walking or performing manual tasks."
+    },
+    {
+      "id": "1.22",
+      "body_system": "Musculoskeletal System",
+      "name": "Non-healing Fracture of Femur, Tibia, Pelvis",
+      "keywords": ["broken leg", "broken hip", "pelvis fracture", "femur fracture", "tibia fracture", "nonunion", "bone graft"],
+      "required_evidence": [
+        "X-ray or imaging showing lack of solid union",
+        "Documentation of inability to walk effectively without assistance",
+        "Medical records showing non-healing persists for at least 12 months from onset"
+      ],
+      "description": "Non-healing fracture of the femur, tibia, pelvis, or one or more of the tarsal bones, with solid union not evident and resulting in inability to ambulate effectively."
+    },
+    {
+      "id": "1.23",
+      "body_system": "Musculoskeletal System",
+      "name": "Non-healing Fracture of Upper Extremity",
+      "keywords": ["broken arm", "humerus fracture", "radius fracture", "ulna fracture", "nonunion arm"],
+      "required_evidence": [
+        "Imaging showing lack of solid union",
+        "Documentation of inability to perform fine/gross motor movements with both hands",
+        "Medical records showing non-healing persists for at least 12 months from onset"
+      ],
+      "description": "Non-healing fracture of an upper extremity, with solid union not evident and resulting in inability to perform fine and gross movements effectively."
+    },
+    {
+      "id": "2.04",
+      "body_system": "Special Senses and Speech",
+      "name": "Hearing Loss",
+      "keywords": ["deaf", "deafness", "hearing loss", "hearing impairment", "can't hear", "cochlear implant", "hard of hearing"],
+      "required_evidence": [
+        "Audiometric testing showing hearing loss at listing-level thresholds",
+        "Word recognition score of 40% or less in the better ear",
+        "OR cochlear implant (considered disabled for 1 year post-implant)",
+        "ENT or audiology treatment records"
+      ],
+      "description": "Hearing loss not treated with cochlear implantation, with average air conduction hearing thresholds and word recognition scores at listing levels."
+    },
+    {
+      "id": "2.07",
+      "body_system": "Special Senses and Speech",
+      "name": "Vestibular/Labyrinthine Disorders",
+      "keywords": ["vertigo", "meniere", "dizziness", "balance disorder", "inner ear disorder", "labyrinthitis"],
+      "required_evidence": [
+        "Medical history of frequent attacks of vertigo, tinnitus, and progressive hearing loss",
+        "Vestibular function testing (caloric or other testing)",
+        "Audiometric testing documenting hearing loss"
+      ],
+      "description": "Disturbance of vestibular-labyrinthine function characterized by frequent attacks of vertigo, tinnitus, and progressive loss of hearing."
+    },
+    {
+      "id": "2.09",
+      "body_system": "Special Senses and Speech",
+      "name": "Loss of Speech",
+      "keywords": ["mute", "loss of speech", "cannot speak", "aphasia", "laryngectomy", "vocal cord paralysis"],
+      "required_evidence": [
+        "Medical documentation of organic cause of speech loss",
+        "Evidence of inability to produce speech that can be heard, understood, or sustained",
+        "Speech therapy and specialist evaluations"
+      ],
+      "description": "Loss of the ability to produce speech by any means that can be heard, understood, and sustained, due to organic pathology."
+    },
+    {
+      "id": "2.10",
+      "body_system": "Special Senses and Speech",
+      "name": "Vision Loss",
+      "keywords": ["blindness", "vision loss", "legally blind", "macular degeneration", "glaucoma", "diabetic retinopathy", "can't see", "low vision"],
+      "required_evidence": [
+        "Visual acuity testing showing remaining vision of 20/200 or less in the better eye with best correction",
+        "OR visual field testing showing contraction to 20 degrees or less in the better eye",
+        "Ophthalmology treatment records",
+        "Documentation that vision loss persists despite treatment"
+      ],
+      "description": "Loss of visual acuity or visual field loss resulting in remaining vision of 20/200 or less in the better eye, or contraction of the visual field to 20 degrees or less."
+    },
+    {
+      "id": "3.02",
+      "body_system": "Respiratory Disorders",
+      "name": "Chronic Respiratory Disorders (COPD)",
+      "keywords": ["COPD", "chronic obstructive pulmonary", "emphysema", "chronic bronchitis", "breathing problems", "shortness of breath", "oxygen", "inhaler"],
+      "required_evidence": [
+        "Spirometry (pulmonary function testing) showing FEV1 at or below listing-level values",
+        "OR arterial blood gas (ABG) showing chronic impairment",
+        "Documentation of need for supplemental oxygen if applicable",
+        "Pulmonologist treatment records"
+      ],
+      "description": "Chronic respiratory disorders with chronic obstructive pulmonary disease, chronic restrictive ventilatory disease, or chronic impairment of gas exchange."
+    },
+    {
+      "id": "3.03",
+      "body_system": "Respiratory Disorders",
+      "name": "Asthma",
+      "keywords": ["asthma", "reactive airway", "asthma attacks", "wheezing", "bronchospasm"],
+      "required_evidence": [
+        "Spirometry showing FEV1 values at listing level, or evidence of asthma attacks requiring emergency treatment",
+        "Documentation of at least 3 exacerbations in 12 months requiring 48+ hours of hospitalization",
+        "Medical records showing compliance with prescribed treatment",
+        "Emergency room and hospitalization records"
+      ],
+      "description": "Asthma with FEV1 at listing level, or exacerbations despite adherence to prescribed treatment, requiring intensive treatment such as hospitalization."
+    },
+    {
+      "id": "3.04",
+      "body_system": "Respiratory Disorders",
+      "name": "Cystic Fibrosis",
+      "keywords": ["cystic fibrosis", "CF", "mucoviscidosis"],
+      "required_evidence": [
+        "Spirometry showing FEV1 at or below listing-level values",
+        "OR documentation of frequent respiratory complications (exacerbations, collapsed lung) requiring hospitalization",
+        "Genetic or sweat chloride test results confirming diagnosis"
+      ],
+      "description": "Cystic fibrosis characterized by chronic pulmonary or gastrointestinal manifestations, evaluated by spirometry or frequency of hospitalizations."
+    },
+    {
+      "id": "3.07",
+      "body_system": "Respiratory Disorders",
+      "name": "Bronchiectasis",
+      "keywords": ["bronchiectasis", "damaged airways", "chronic cough", "sputum production"],
+      "required_evidence": [
+        "Imaging (CT scan) showing bronchiectasis",
+        "Documentation of exacerbations requiring hospitalization at least 3 times in a 12-month period",
+        "Spirometry testing results"
+      ],
+      "description": "Bronchiectasis characterized by permanent dilation of bronchi, with chronic sputum production and recurrent respiratory infections."
+    },
+    {
+      "id": "3.09",
+      "body_system": "Respiratory Disorders",
+      "name": "Chronic Pulmonary Hypertension",
+      "keywords": ["pulmonary hypertension", "PAH", "high blood pressure in lungs"],
+      "required_evidence": [
+        "Cardiac catheterization documenting mean pulmonary artery pressure >= 40 mm Hg",
+        "Echocardiogram results",
+        "Documentation of severe dyspnea (shortness of breath) on minimal exertion"
+      ],
+      "description": "Chronic pulmonary hypertension secondary to chronic pulmonary vascular or parenchymal disease, confirmed by cardiac catheterization."
+    },
+    {
+      "id": "4.02",
+      "body_system": "Cardiovascular System",
+      "name": "Chronic Heart Failure",
+      "keywords": ["heart failure", "congestive heart failure", "CHF", "cardiomyopathy", "enlarged heart", "weak heart", "ejection fraction"],
+      "required_evidence": [
+        "Echocardiogram or cardiac catheterization showing systolic or diastolic failure",
+        "Documentation of persistent symptoms despite prescribed treatment (shortness of breath, fatigue, edema)",
+        "Exercise tolerance test results if available",
+        "Cardiology treatment records"
+      ],
+      "description": "Chronic heart failure with evidence of systolic or diastolic failure, resulting in inability to perform activities involving moderate exertion."
+    },
+    {
+      "id": "4.04",
+      "body_system": "Cardiovascular System",
+      "name": "Ischemic Heart Disease",
+      "keywords": ["coronary artery disease", "CAD", "heart attack", "myocardial infarction", "angina", "chest pain", "blocked arteries", "stent", "bypass"],
+      "required_evidence": [
+        "Cardiac catheterization or angiography showing significant coronary artery obstruction",
+        "Exercise stress test results showing ischemia at low workload",
+        "Documentation of anginal symptoms despite treatment",
+        "Cardiology records including surgical/interventional history"
+      ],
+      "description": "Ischemic heart disease with chest pain of cardiac origin, demonstrated by exercise testing or imaging, despite prescribed treatment."
+    },
+    {
+      "id": "4.05",
+      "body_system": "Cardiovascular System",
+      "name": "Recurrent Arrhythmias",
+      "keywords": ["arrhythmia", "atrial fibrillation", "afib", "ventricular tachycardia", "heart block", "pacemaker", "defibrillator", "syncope", "fainting"],
+      "required_evidence": [
+        "ECG or Holter monitor documenting the arrhythmia",
+        "Documentation of recurrent episodes of syncope (fainting) or near-syncope despite treatment",
+        "Cardiology evaluation records"
+      ],
+      "description": "Recurrent arrhythmias, resulting in uncontrolled, documented episodes of syncope or near-syncope, despite adherence to prescribed treatment."
+    },
+    {
+      "id": "4.06",
+      "body_system": "Cardiovascular System",
+      "name": "Symptomatic Congenital Heart Disease",
+      "keywords": ["congenital heart defect", "tetralogy of fallot", "atrial septal defect", "ventricular septal defect", "cyanotic heart disease"],
+      "required_evidence": [
+        "Cardiac catheterization or echocardiogram documenting the shunt or defect",
+        "Documentation of cyanosis or severe exercise limitation",
+        "Cardiovascular surgical history"
+      ],
+      "description": "Congenital heart disease, documented by appropriate imaging or catheterization, with symptomatic limitations or cyanosis."
+    },
+    {
+      "id": "4.11",
+      "body_system": "Cardiovascular System",
+      "name": "Chronic Venous Insufficiency",
+      "keywords": ["venous insufficiency", "varicose veins", "deep vein thrombosis", "DVT", "ulcers on legs", "leg swelling"],
+      "required_evidence": [
+        "Duplex ultrasound showing venous reflux",
+        "Medical documentation of extensive leg swelling or recurrent stasis ulcers",
+        "Treatment records showing compression therapy compliance"
+      ],
+      "description": "Chronic venous insufficiency of a lower extremity with incompetency or obstruction of the deep venous system, resulting in extensive edema or stasis ulcers."
+    },
+    {
+      "id": "4.12",
+      "body_system": "Cardiovascular System",
+      "name": "Peripheral Arterial Disease",
+      "keywords": ["peripheral arterial disease", "PAD", "claudication", "leg pain when walking", "arterial bypass"],
+      "required_evidence": [
+        "Doppler studies showing ankle-brachial index (ABI) less than 0.50",
+        "Documentation of intermittent claudication with severe impairment",
+        "Angiography or vascular surgical records"
+      ],
+      "description": "Peripheral arterial disease, with intermittent claudication, and resting ankle/brachial systolic blood pressure ratio less than 0.50."
+    },
+    {
+      "id": "5.02",
+      "body_system": "Digestive System",
+      "name": "Gastrointestinal Hemorrhaging",
+      "keywords": ["GI bleed", "gastrointestinal bleeding", "stomach bleeding", "esophageal varices", "ulcer bleeding"],
+      "required_evidence": [
+        "Documentation of GI hemorrhaging requiring transfusion of at least 2 units of blood",
+        "Evidence of hemorrhaging occurring on 3+ occasions in 6 months, at least 30 days apart",
+        "Hospitalization records for each bleeding episode",
+        "Gastroenterology treatment records"
+      ],
+      "description": "Gastrointestinal hemorrhaging from any cause, requiring blood transfusion of at least 2 units, occurring on 3 or more occasions within a consecutive 6-month period."
+    },
+    {
+      "id": "5.05",
+      "body_system": "Digestive System",
+      "name": "Chronic Liver Disease",
+      "keywords": ["liver disease", "cirrhosis", "hepatitis c", "hepatitis b", "liver failure", "ascites", "varices", "hepatic encephalopathy"],
+      "required_evidence": [
+        "Biopsy or imaging showing cirrhosis or chronic liver disease",
+        "Lab results showing elevated bilirubin or low albumin",
+        "Documentation of complications like ascites, esophageal varices, or encephalopathy",
+        "Gastroenterology or hepatology records"
+      ],
+      "description": "Chronic liver disease (including hepatitis, cirrhosis, and liver failure) with complications such as ascites, variceal bleeding, or hepatic encephalopathy."
+    },
+    {
+      "id": "5.06",
+      "body_system": "Digestive System",
+      "name": "Inflammatory Bowel Disease (IBD)",
+      "keywords": ["crohn's", "crohn disease", "ulcerative colitis", "IBD", "inflammatory bowel", "colitis"],
+      "required_evidence": [
+        "Endoscopy, imaging, or biopsy confirming IBD diagnosis",
+        "Documentation of obstruction, fistula formation, or need for supplemental nutrition",
+        "Evidence of 2+ hospitalizations in 6 months or significant weight loss",
+        "Gastroenterology treatment records"
+      ],
+      "description": "Inflammatory bowel disease (Crohn's disease or ulcerative colitis) with obstruction, surgery history, or complications requiring ongoing medical management."
+    },
+    {
+      "id": "5.08",
+      "body_system": "Digestive System",
+      "name": "Weight Loss due to Digestive Disorder",
+      "keywords": ["malnutrition", "weight loss digestive", "involuntary weight loss", "gastrectomy", "short bowel syndrome"],
+      "required_evidence": [
+        "Calculated Body Mass Index (BMI) of less than 17.50 on at least two evaluations 60+ days apart within a 12-month period",
+        "Documentation of the underlying digestive disorder causing the weight loss"
+      ],
+      "description": "Weight loss due to any persisting gastrointestinal disorder, resulting in BMI of less than 17.50, documented on at least two evaluations."
+    },
+    {
+      "id": "6.05",
+      "body_system": "Genitourinary Disorders",
+      "name": "Nephrotic Syndrome",
+      "keywords": ["nephrotic syndrome", "severe protein in urine", "severe edema", "glomerulonephritis"],
+      "required_evidence": [
+        "Lab tests showing severe proteinuria (protein in urine) and low serum albumin",
+        "Medical documentation of anasarca (widespread swelling) persisting for 3+ months despite treatment"
+      ],
+      "description": "Nephrotic syndrome, with significant proteinuria and severe edema, persisting for at least 3 months despite prescribed treatment."
+    },
+    {
+      "id": "6.06",
+      "body_system": "Genitourinary Disorders",
+      "name": "Chronic Kidney Disease (CKD) Requiring Dialysis",
+      "keywords": ["kidney failure", "renal failure", "dialysis", "CKD", "chronic kidney disease", "end stage renal disease", "ESRD", "kidney transplant"],
+      "required_evidence": [
+        "Lab results showing chronic kidney disease (GFR, creatinine levels)",
+        "Documentation of dialysis schedule and treatment compliance",
+        "OR documentation of kidney transplant",
+        "Nephrology treatment records"
+      ],
+      "description": "Chronic kidney disease requiring chronic dialysis. Also covered: kidney transplant (considered disabled for 12 months post-transplant)."
+    },
+    {
+      "id": "7.05",
+      "body_system": "Hematological Disorders",
+      "name": "Sickle Cell Disease",
+      "keywords": ["sickle cell", "sickle cell disease", "sickle cell anemia", "sickle cell crisis", "hemoglobin SS"],
+      "required_evidence": [
+        "Hemoglobin electrophoresis confirming sickle cell disease",
+        "Documentation of vaso-occlusive crises requiring parenteral narcotic medication, occurring 3+ times in 12 months",
+        "Evidence of complications (stroke, splenic sequestration, chronic anemia)",
+        "Hematology treatment records"
+      ],
+      "description": "Sickle cell disease with documented painful crises occurring at least 3 times within a 12-month period, requiring parenteral narcotic medications."
+    },
+    {
+      "id": "7.08",
+      "body_system": "Hematological Disorders",
+      "name": "Coagulation Disorders",
+      "keywords": ["hemophilia", "von willebrand", "coagulation disorder", "easy bleeding", "bleeding joint"],
+      "required_evidence": [
+        "Coagulation factor assays showing deficiency",
+        "Documentation of spontaneous bleeding episodes requiring transfusion or infusion at least 3 times in 12 months",
+        "Hematology treatment records"
+      ],
+      "description": "Coagulation disorders (such as hemophilia or Von Willebrand disease), with spontaneous bleeding episodes requiring medical intervention."
+    },
+    {
+      "id": "7.10",
+      "body_system": "Hematological Disorders",
+      "name": "Bone Marrow Failure",
+      "keywords": ["aplastic anemia", "myelofibrosis", "bone marrow failure", "severe anemia", "pancytopenia"],
+      "required_evidence": [
+        "Bone marrow biopsy confirming failure",
+        "Documentation of need for lifelong blood or platelet transfusions (at least once every 6 weeks)",
+        "Lab reports showing hemoglobin, white count, and platelet count levels"
+      ],
+      "description": "Bone marrow failure (including aplastic anemia or myelofibrosis) requiring blood or platelet transfusions at least once every 6 weeks."
+    },
+    {
+      "id": "8.04",
+      "body_system": "Skin Disorders",
+      "name": "Dermatitis",
+      "keywords": ["dermatitis", "severe eczema", "severe psoriasis", "chronic skin lesions", "skin peeling"],
+      "required_evidence": [
+        "Medical documentation of extensive skin lesions persisting for 3+ months despite treatment",
+        "Evidence of significant limitation in ability to walk or perform fine/gross movements due to lesions",
+        "Dermatologist records"
+      ],
+      "description": "Severe dermatitis (including eczema, psoriasis, or seborrhea) with extensive skin lesions that do not respond to treatment and limit physical function."
+    },
+    {
+      "id": "8.06",
+      "body_system": "Skin Disorders",
+      "name": "Hidradenitis Suppurativa",
+      "keywords": ["hidradenitis", "hidradenitis suppurativa", "severe skin abscesses", "chronic skin infections"],
+      "required_evidence": [
+        "Medical records documenting hidradenitis suppurativa lesions in both axillae, both groins, or perineum",
+        "Evidence that lesions persist for at least 3 months despite treatment",
+        "Dermatology or surgical records"
+      ],
+      "description": "Hidradenitis suppurativa with extensive skin lesions in both armpits, both groin areas, or the perineal area, persisting despite treatment."
+    },
+    {
+      "id": "9.00",
+      "body_system": "Endocrine Disorders",
+      "name": "Endocrine Disorders (Diabetes)",
+      "keywords": ["diabetes", "type 1 diabetes", "type 2 diabetes", "diabetic", "insulin", "blood sugar", "neuropathy", "retinopathy", "kidney disease"],
+      "required_evidence": [
+        "Blood glucose monitoring records and HbA1c levels",
+        "Documentation of end-organ damage (neuropathy, retinopathy, nephropathy)",
+        "Evidence that the condition meets the criteria of another body system listing due to complications",
+        "Endocrinologist or primary care treatment records"
+      ],
+      "description": "Endocrine disorders are evaluated based on their functional effects on other body systems. Diabetes is assessed by its complications (neuropathy, retinopathy, etc.)."
+    },
+    {
+      "id": "10.06",
+      "body_system": "Congenital Disorders Affecting Multiple Systems",
+      "name": "Non-Mosaic Down Syndrome",
+      "keywords": ["down syndrome", "trisomy 21", "mongolism"],
+      "required_evidence": [
+        "Karyotype analysis confirming non-mosaic Down Syndrome (Trisomy 21)",
+        "OR laboratory report with physician confirmation of Trisomy 21"
+      ],
+      "description": "Non-mosaic Down Syndrome (Trisomy 21), which is established by clinical findings and compatible genetic testing."
+    },
+    {
       "id": "11.02",
-      "body_system": "Neurological",
-      "name": "Epilepsy — Non-Convulsive",
-      "keywords": ["epilepsy", "seizures", "seizure disorder", "absence seizures", "temporal lobe epilepsy", "partial seizures"],
+      "body_system": "Neurological Disorders",
+      "name": "Epilepsy — Convulsive / Non-Convulsive",
+      "keywords": ["epilepsy", "seizures", "seizure disorder", "absence seizures", "grand mal", "petit mal", "convulsions", "tonic-clonic"],
       "required_evidence": [
         "EEG showing epileptiform abnormalities",
         "Detailed description of seizure pattern, frequency, and duration",
         "Medical records showing seizures despite at least 3 months of prescribed treatment",
         "Documentation of postictal manifestations"
       ],
-      "description": "Epilepsy with non-convulsive seizures, occurring at least once a week for at least 3 consecutive months despite adherence to prescribed treatment."
+      "description": "Epilepsy with seizures occurring frequently (at least once a month for tonic-clonic, or once a week for non-convulsive) despite adherence to treatment."
     },
     {
       "id": "11.04",
-      "body_system": "Neurological",
+      "body_system": "Neurological Disorders",
       "name": "Vascular Insult to the Brain (Stroke)",
-      "keywords": ["stroke", "cerebrovascular accident", "CVA", "brain damage", "hemiparesis", "aphasia", "TIA"],
+      "keywords": ["stroke", "cerebrovascular accident", "CVA", "brain damage", "hemiparesis", "aphasia", "TIA", "paralysis after stroke"],
       "required_evidence": [
         "Brain imaging (CT/MRI) showing vascular insult",
         "Documentation of sensory or motor aphasia",
@@ -65,8 +447,20 @@
       "description": "Central nervous system vascular accident (stroke) with disorganization of motor function, sensory or motor aphasia, or significant communication deficits."
     },
     {
+      "id": "11.07",
+      "body_system": "Neurological Disorders",
+      "name": "Cerebral Palsy",
+      "keywords": ["cerebral palsy", "cp", "spastic diplegia", "athetoid cerebral palsy"],
+      "required_evidence": [
+        "Medical documentation of cerebral palsy",
+        "Evidence of significant difficulty walking, standing, or using hands/arms",
+        "OR documentation of severe intellectual or visual impairment"
+      ],
+      "description": "Cerebral palsy characterized by significant difficulty walking or using the hands/arms, or severe speech, visual, or intellectual deficits."
+    },
+    {
       "id": "11.09",
-      "body_system": "Neurological",
+      "body_system": "Neurological Disorders",
       "name": "Multiple Sclerosis",
       "keywords": ["MS", "multiple sclerosis", "demyelinating disease", "optic neuritis", "numbness and tingling"],
       "required_evidence": [
@@ -78,8 +472,30 @@
       "description": "Multiple sclerosis with disorganization of motor function, visual or mental impairment, or significant reproducible fatigue."
     },
     {
+      "id": "11.10",
+      "body_system": "Neurological Disorders",
+      "name": "Amyotrophic Lateral Sclerosis (ALS)",
+      "keywords": ["ALS", "lou gehrig", "amyotrophic lateral sclerosis", "motor neuron disease"],
+      "required_evidence": [
+        "Neurological documentation of ALS diagnosis (automatically meets disability criteria)"
+      ],
+      "description": "Amyotrophic Lateral Sclerosis (ALS), also known as Lou Gehrig's disease, which is clinically confirmed and automatically qualifies for disability."
+    },
+    {
+      "id": "11.12",
+      "body_system": "Neurological Disorders",
+      "name": "Parkinsonian Syndrome",
+      "keywords": ["parkinson", "parkinson's", "tremor", "rigidity", "bradykinesia", "shaking palsy"],
+      "required_evidence": [
+        "Neurologist documentation of Parkinson's disease",
+        "Evidence of significant rigidity, tremors, or bradykinesia in two extremities",
+        "Documentation of resulting difficulty walking, standing, or performing manual tasks"
+      ],
+      "description": "Parkinsonian syndrome with rigidity, bradykinesia, or tremor, resulting in significant difficulty walking or using the hands/arms."
+    },
+    {
       "id": "11.14",
-      "body_system": "Neurological",
+      "body_system": "Neurological Disorders",
       "name": "Peripheral Neuropathy",
       "keywords": ["neuropathy", "peripheral neuropathy", "diabetic neuropathy", "nerve damage", "numbness in feet", "numbness in hands", "tingling"],
       "required_evidence": [
@@ -89,6 +505,44 @@
         "Evidence condition persists despite treatment"
       ],
       "description": "Peripheral neuropathy with disorganization of motor function in two extremities resulting in an extreme limitation of the ability to stand up, balance, walk, or use the upper extremities."
+    },
+    {
+      "id": "11.18",
+      "body_system": "Neurological Disorders",
+      "name": "Traumatic Brain Injury (TBI)",
+      "keywords": ["TBI", "traumatic brain injury", "concussion", "brain hemorrhage", "post-concussion syndrome"],
+      "required_evidence": [
+        "MRI or CT scan showing brain injury",
+        "Documentation of motor function loss in two extremities persisting for 3+ months",
+        "OR documentation of marked limitation in physical functioning AND mental areas (memory, social, concentration)"
+      ],
+      "description": "Traumatic brain injury with disorganization of motor function, or cognitive/behavioral impairments, persisting for at least 3 months."
+    },
+    {
+      "id": "12.02",
+      "body_system": "Mental Disorders",
+      "name": "Neurocognitive Disorders (Dementia)",
+      "keywords": ["dementia", "alzheimer", "alzheimer's", "cognitive decline", "senile", "memory loss", "vascular dementia"],
+      "required_evidence": [
+        "Documentation of significant cognitive decline in memory, language, or executive function",
+        "Standardized cognitive testing (e.g. MMSE) results",
+        "Evidence of marked limitation in daily living or social functioning",
+        "Medical history and psychiatric evaluations"
+      ],
+      "description": "Dementia and other neurocognitive disorders characterized by significant decline in one or more cognitive areas, resulting in marked functional limitations."
+    },
+    {
+      "id": "12.03",
+      "body_system": "Mental Disorders",
+      "name": "Schizophrenia Spectrum and Other Psychotic Disorders",
+      "keywords": ["schizophrenia", "psychosis", "psychotic", "schizoaffective", "delusions", "hallucinations", "paranoia"],
+      "required_evidence": [
+        "Psychiatric records documenting delusions, hallucinations, or disorganized thinking/behavior",
+        "Evidence of marked limitation in at least two functional areas",
+        "OR evidence of serious and persistent disorder (2+ years with marginal adjustment)",
+        "Medication and hospitalization records"
+      ],
+      "description": "Schizophrenia spectrum and other psychotic disorders characterized by delusions, hallucinations, disorganized thinking, or grossly disorganized behavior."
     },
     {
       "id": "12.04",
@@ -104,6 +558,19 @@
       "description": "Depressive, bipolar, and related disorders characterized by medical documentation of depressive syndrome, manic syndrome, or bipolar syndrome, with marked functional limitations."
     },
     {
+      "id": "12.05",
+      "body_system": "Mental Disorders",
+      "name": "Intellectual Disorder",
+      "keywords": ["intellectual disability", "mental retardation", "low IQ", "developmental disability", "learning disability", "cognitive impairment"],
+      "required_evidence": [
+        "IQ testing showing significantly subaverage general intellectual functioning (IQ of 70-75 or below)",
+        "Documentation of deficits in adaptive functioning initially manifested before age 22",
+        "Evidence of marked limitation in at least two functional areas",
+        "School records or developmental history if available"
+      ],
+      "description": "Intellectual disorder characterized by significantly subaverage general intellectual functioning with deficits in adaptive functioning initially manifested before age 22."
+    },
+    {
       "id": "12.06",
       "body_system": "Mental Disorders",
       "name": "Anxiety and Obsessive-Compulsive Disorders",
@@ -115,6 +582,56 @@
         "Documentation of specific anxiety symptoms (restlessness, fatigue, difficulty concentrating, muscle tension, sleep disturbance)"
       ],
       "description": "Anxiety and obsessive-compulsive disorders characterized by excessive anxiety, worry, apprehension, or fear, with marked functional limitations."
+    },
+    {
+      "id": "12.08",
+      "body_system": "Mental Disorders",
+      "name": "Personality and Impulse-Control Disorders",
+      "keywords": ["borderline", "borderline personality", "antisocial", "personality disorder", "impulse control", "paranoid personality", "schizoid"],
+      "required_evidence": [
+        "Clinical documentation of a persistent, inflexible pattern of behavior that causes distress",
+        "Evidence of marked limitation in at least two functional areas (social, task completion, adapting)",
+        "Psychiatrist/psychologist treatment notes"
+      ],
+      "description": "Personality and impulse-control disorders characterized by deeply ingrained, maladaptive patterns of behavior, with marked limitations."
+    },
+    {
+      "id": "12.10",
+      "body_system": "Mental Disorders",
+      "name": "Eating Disorders",
+      "keywords": ["anorexia", "anorexia nervosa", "bulimia", "bulimia nervosa", "eating disorder", "binge eating"],
+      "required_evidence": [
+        "Documentation of persistent disturbance in eating behavior that significantly alters body weight",
+        "Medical records showing BMI below normal or medical complications",
+        "Evidence of marked limitation in at least two functional areas",
+        "Psychiatric/psychological treatment records"
+      ],
+      "description": "Eating disorders with persistent alteration in eating or eating-related behavior that substantially changes body weight, with marked limitation in functioning."
+    },
+    {
+      "id": "12.11",
+      "body_system": "Mental Disorders",
+      "name": "Neurodevelopmental Disorders (Autism)",
+      "keywords": ["autism", "autism spectrum", "ASD", "asperger", "pervasive developmental disorder"],
+      "required_evidence": [
+        "Documentation of qualitative deficits in verbal/nonverbal communication and social interaction",
+        "Evidence of significantly restricted, repetitive patterns of behavior",
+        "Evidence of marked limitation in at least two functional areas",
+        "Diagnostic evaluation from qualified professional"
+      ],
+      "description": "Neurodevelopmental disorders characterized by qualitative deficits in verbal communication, nonverbal communication, and social interaction."
+    },
+    {
+      "id": "12.13",
+      "body_system": "Mental Disorders",
+      "name": "ADHD / Developmental Disorders",
+      "keywords": ["ADHD", "ADD", "attention deficit", "hyperactivity", "distractibility"],
+      "required_evidence": [
+        "Clinical documentation of hyperactive, impulsive, or inattentive symptoms before age 12",
+        "Evidence of marked limitation in learning, social, or executive functioning",
+        "Psychiatric or school evaluations"
+      ],
+      "description": "Attention-deficit/hyperactivity disorder characterized by marked inattention, impulsivity, or hyperactivity, resulting in functional limitations."
     },
     {
       "id": "12.15",
@@ -131,164 +648,21 @@
       "description": "Trauma- and stressor-related disorders characterized by experiencing or witnessing a traumatic event, with involuntary re-experiencing, avoidance, and disturbance in mood and behavior."
     },
     {
-      "id": "12.03",
-      "body_system": "Mental Disorders",
-      "name": "Schizophrenia Spectrum and Other Psychotic Disorders",
-      "keywords": ["schizophrenia", "psychosis", "psychotic", "schizoaffective", "delusions", "hallucinations", "paranoia"],
+      "id": "13.00",
+      "body_system": "Malignant Neoplastic Diseases (Cancer)",
+      "name": "Malignant Neoplastic Diseases",
+      "keywords": ["cancer", "tumor", "malignant", "leukemia", "lymphoma", "carcinoma", "metastatic", "chemotherapy", "radiation", "melanoma", "sarcoma"],
       "required_evidence": [
-        "Psychiatric records documenting delusions, hallucinations, or disorganized thinking/behavior",
-        "Evidence of marked limitation in at least two functional areas",
-        "OR evidence of serious and persistent disorder (2+ years with marginal adjustment)",
-        "Medication and hospitalization records"
+        "Pathology report confirming malignancy",
+        "Documentation of treatment plan (surgery, chemotherapy, radiation)",
+        "Evidence of recurrence, metastasis, or treatment side effects causing functional limitations",
+        "Oncology treatment records"
       ],
-      "description": "Schizophrenia spectrum and other psychotic disorders characterized by delusions, hallucinations, disorganized thinking, or grossly disorganized behavior."
-    },
-    {
-      "id": "12.05",
-      "body_system": "Mental Disorders",
-      "name": "Intellectual Disorder",
-      "keywords": ["intellectual disability", "mental retardation", "low IQ", "developmental disability", "learning disability", "cognitive impairment"],
-      "required_evidence": [
-        "IQ testing showing significantly subaverage general intellectual functioning (IQ of 70-75 or below)",
-        "Documentation of deficits in adaptive functioning initially manifested before age 22",
-        "Evidence of marked limitation in at least two functional areas",
-        "School records or developmental history if available"
-      ],
-      "description": "Intellectual disorder characterized by significantly subaverage general intellectual functioning with deficits in adaptive functioning initially manifested before age 22."
-    },
-    {
-      "id": "12.11",
-      "body_system": "Mental Disorders",
-      "name": "Neurodevelopmental Disorders (Autism)",
-      "keywords": ["autism", "autism spectrum", "ASD", "asperger", "pervasive developmental disorder"],
-      "required_evidence": [
-        "Documentation of qualitative deficits in verbal/nonverbal communication and social interaction",
-        "Evidence of significantly restricted, repetitive patterns of behavior",
-        "Evidence of marked limitation in at least two functional areas",
-        "Diagnostic evaluation from qualified professional"
-      ],
-      "description": "Neurodevelopmental disorders characterized by qualitative deficits in verbal communication, nonverbal communication, and social interaction."
-    },
-    {
-      "id": "4.02",
-      "body_system": "Cardiovascular",
-      "name": "Chronic Heart Failure",
-      "keywords": ["heart failure", "congestive heart failure", "CHF", "cardiomyopathy", "enlarged heart", "weak heart", "ejection fraction"],
-      "required_evidence": [
-        "Echocardiogram or cardiac catheterization showing systolic or diastolic failure",
-        "Documentation of persistent symptoms despite prescribed treatment (shortness of breath, fatigue, edema)",
-        "Exercise tolerance test results if available",
-        "Cardiology treatment records"
-      ],
-      "description": "Chronic heart failure with evidence of systolic or diastolic failure, resulting in inability to perform activities involving moderate exertion."
-    },
-    {
-      "id": "4.04",
-      "body_system": "Cardiovascular",
-      "name": "Ischemic Heart Disease",
-      "keywords": ["coronary artery disease", "CAD", "heart attack", "myocardial infarction", "angina", "chest pain", "blocked arteries", "stent", "bypass"],
-      "required_evidence": [
-        "Cardiac catheterization or angiography showing significant coronary artery obstruction",
-        "Exercise stress test results showing ischemia at low workload",
-        "Documentation of anginal symptoms despite treatment",
-        "Cardiology records including surgical/interventional history"
-      ],
-      "description": "Ischemic heart disease with chest pain of cardiac origin, demonstrated by exercise testing or imaging, despite prescribed treatment."
-    },
-    {
-      "id": "3.02",
-      "body_system": "Respiratory",
-      "name": "Chronic Respiratory Disorders (COPD/Asthma)",
-      "keywords": ["COPD", "chronic obstructive pulmonary", "emphysema", "chronic bronchitis", "asthma", "breathing problems", "shortness of breath", "oxygen", "inhaler"],
-      "required_evidence": [
-        "Spirometry (pulmonary function testing) showing FEV1 at or below listing-level values",
-        "OR arterial blood gas (ABG) showing chronic impairment",
-        "Documentation of need for supplemental oxygen if applicable",
-        "Pulmonologist treatment records"
-      ],
-      "description": "Chronic respiratory disorders with chronic obstructive pulmonary disease, chronic restrictive ventilatory disease, or chronic impairment of gas exchange."
-    },
-    {
-      "id": "3.03",
-      "body_system": "Respiratory",
-      "name": "Asthma",
-      "keywords": ["asthma", "reactive airway", "asthma attacks", "wheezing", "bronchospasm"],
-      "required_evidence": [
-        "Spirometry showing FEV1 values at listing level, or evidence of asthma attacks requiring emergency treatment",
-        "Documentation of at least 3 exacerbations in 12 months requiring 48+ hours of hospitalization",
-        "Medical records showing compliance with prescribed treatment",
-        "Emergency room and hospitalization records"
-      ],
-      "description": "Asthma with FEV1 at listing level, or exacerbations despite adherence to prescribed treatment, requiring intensive treatment such as hospitalization."
-    },
-    {
-      "id": "9.00",
-      "body_system": "Endocrine",
-      "name": "Endocrine Disorders (Diabetes)",
-      "keywords": ["diabetes", "type 1 diabetes", "type 2 diabetes", "diabetic", "insulin", "blood sugar", "neuropathy", "retinopathy", "kidney disease"],
-      "required_evidence": [
-        "Blood glucose monitoring records and HbA1c levels",
-        "Documentation of end-organ damage (neuropathy, retinopathy, nephropathy)",
-        "Evidence that the condition meets the criteria of another body system listing due to complications",
-        "Endocrinologist or primary care treatment records"
-      ],
-      "description": "Endocrine disorders are evaluated based on their functional effects on other body systems. Diabetes is assessed by its complications (neuropathy, retinopathy, etc.)."
-    },
-    {
-      "id": "5.02",
-      "body_system": "Digestive",
-      "name": "Gastrointestinal Hemorrhaging",
-      "keywords": ["GI bleed", "gastrointestinal bleeding", "stomach bleeding", "esophageal varices", "ulcer bleeding"],
-      "required_evidence": [
-        "Documentation of GI hemorrhaging requiring transfusion of at least 2 units of blood",
-        "Evidence of hemorrhaging occurring on 3+ occasions in 6 months, at least 30 days apart",
-        "Hospitalization records for each bleeding episode",
-        "Gastroenterology treatment records"
-      ],
-      "description": "Gastrointestinal hemorrhaging from any cause, requiring blood transfusion of at least 2 units, occurring on 3 or more occasions within a consecutive 6-month period."
-    },
-    {
-      "id": "5.06",
-      "body_system": "Digestive",
-      "name": "Inflammatory Bowel Disease (IBD)",
-      "keywords": ["crohn's", "crohn disease", "ulcerative colitis", "IBD", "inflammatory bowel", "colitis"],
-      "required_evidence": [
-        "Endoscopy, imaging, or biopsy confirming IBD diagnosis",
-        "Documentation of obstruction, fistula formation, or need for supplemental nutrition",
-        "Evidence of 2+ hospitalizations in 6 months or significant weight loss",
-        "Gastroenterology treatment records"
-      ],
-      "description": "Inflammatory bowel disease (Crohn's disease or ulcerative colitis) with obstruction, surgery history, or complications requiring ongoing medical management."
-    },
-    {
-      "id": "7.05",
-      "body_system": "Hematological",
-      "name": "Sickle Cell Disease",
-      "keywords": ["sickle cell", "sickle cell disease", "sickle cell anemia", "sickle cell crisis", "hemoglobin SS"],
-      "required_evidence": [
-        "Hemoglobin electrophoresis confirming sickle cell disease",
-        "Documentation of vaso-occlusive crises requiring parenteral narcotic medication, occurring 3+ times in 12 months",
-        "Evidence of complications (stroke, splenic sequestration, chronic anemia)",
-        "Hematology treatment records"
-      ],
-      "description": "Sickle cell disease with documented painful crises occurring at least 3 times within a 12-month period, requiring parenteral narcotic medications."
-    },
-    {
-      "id": "14.09",
-      "body_system": "Immune",
-      "name": "Inflammatory Arthritis",
-      "keywords": ["rheumatoid arthritis", "lupus arthritis", "psoriatic arthritis", "ankylosing spondylitis", "inflammatory arthritis"],
-      "required_evidence": [
-        "Medical documentation of inflammatory arthritis with persistent joint inflammation",
-        "Imaging showing joint destruction or deformity",
-        "Evidence of involvement of major peripheral joints or spinal joints with inability to ambulate effectively or perform fine/gross movements",
-        "Rheumatology treatment records"
-      ],
-      "description": "Inflammatory arthritis with persistent inflammation or deformity in major peripheral joints or joints of the spine, resulting in inability to ambulate effectively or perform fine and gross movements."
+      "description": "Malignant neoplastic diseases are evaluated based on the specific type, site, and stage of the cancer, along with response to treatment and residual limitations."
     },
     {
       "id": "14.02",
-      "body_system": "Immune",
+      "body_system": "Immune System Disorders",
       "name": "Systemic Lupus Erythematosus (SLE)",
       "keywords": ["lupus", "SLE", "systemic lupus", "autoimmune disease", "butterfly rash"],
       "required_evidence": [
@@ -300,8 +674,33 @@
       "description": "Systemic lupus erythematosus with involvement of two or more body systems, with repeated manifestations and at least marked limitation in one area of functioning."
     },
     {
+      "id": "14.04",
+      "body_system": "Immune System Disorders",
+      "name": "Systemic Sclerosis (Scleroderma)",
+      "keywords": ["scleroderma", "systemic sclerosis", "raynaud's phenomenon", "skin thickening"],
+      "required_evidence": [
+        "Clinical diagnosis of systemic sclerosis with organ involvement",
+        "Evidence of repeated manifestations with constitutional symptoms",
+        "Documentation of marked limitation in daily activities or task completion"
+      ],
+      "description": "Systemic sclerosis (scleroderma) with clinical evidence of systemic involvement of internal organs, or repeated manifestations."
+    },
+    {
+      "id": "14.09",
+      "body_system": "Immune System Disorders",
+      "name": "Inflammatory Arthritis",
+      "keywords": ["rheumatoid arthritis", "lupus arthritis", "psoriatic arthritis", "ankylosing spondylitis", "inflammatory arthritis"],
+      "required_evidence": [
+        "Medical documentation of inflammatory arthritis with persistent joint inflammation",
+        "Imaging showing joint destruction or deformity",
+        "Evidence of involvement of major peripheral joints or spinal joints with inability to ambulate effectively or perform fine/gross movements",
+        "Rheumatology treatment records"
+      ],
+      "description": "Inflammatory arthritis with persistent inflammation or deformity in major peripheral joints or joints of the spine, resulting in inability to ambulate effectively or perform fine and gross movements."
+    },
+    {
       "id": "14.11",
-      "body_system": "Immune",
+      "body_system": "Immune System Disorders",
       "name": "HIV/AIDS",
       "keywords": ["HIV", "AIDS", "human immunodeficiency virus", "acquired immunodeficiency"],
       "required_evidence": [
@@ -311,97 +710,6 @@
         "Infectious disease and lab records (CD4 count, viral load)"
       ],
       "description": "Human immunodeficiency virus (HIV) infection with specified manifestations or repeated manifestations resulting in significant functional limitations."
-    },
-    {
-      "id": "6.06",
-      "body_system": "Genitourinary",
-      "name": "Chronic Kidney Disease (CKD) Requiring Dialysis",
-      "keywords": ["kidney failure", "renal failure", "dialysis", "CKD", "chronic kidney disease", "end stage renal disease", "ESRD", "kidney transplant"],
-      "required_evidence": [
-        "Lab results showing chronic kidney disease (GFR, creatinine levels)",
-        "Documentation of dialysis schedule and treatment compliance",
-        "OR documentation of kidney transplant",
-        "Nephrology treatment records"
-      ],
-      "description": "Chronic kidney disease requiring chronic dialysis. Also covered: kidney transplant (considered disabled for 12 months post-transplant)."
-    },
-    {
-      "id": "13.00",
-      "body_system": "Cancer",
-      "name": "Malignant Neoplastic Diseases (Cancer)",
-      "keywords": ["cancer", "tumor", "malignant", "leukemia", "lymphoma", "carcinoma", "metastatic", "chemotherapy", "radiation"],
-      "required_evidence": [
-        "Pathology report confirming malignancy",
-        "Documentation of treatment plan (surgery, chemotherapy, radiation)",
-        "Evidence of recurrence, metastasis, or treatment side effects causing functional limitations",
-        "Oncology treatment records"
-      ],
-      "description": "Malignant neoplastic diseases are evaluated based on the specific type, site, and stage of the cancer, along with response to treatment and residual limitations."
-    },
-    {
-      "id": "2.10",
-      "body_system": "Special Senses (Vision)",
-      "name": "Vision Loss",
-      "keywords": ["blindness", "vision loss", "legally blind", "macular degeneration", "glaucoma", "diabetic retinopathy", "can't see", "low vision"],
-      "required_evidence": [
-        "Visual acuity testing showing remaining vision of 20/200 or less in the better eye with best correction",
-        "OR visual field testing showing contraction to 20 degrees or less in the better eye",
-        "Ophthalmology treatment records",
-        "Documentation that vision loss persists despite treatment"
-      ],
-      "description": "Loss of visual acuity or visual field loss resulting in remaining vision of 20/200 or less in the better eye, or contraction of the visual field to 20 degrees or less."
-    },
-    {
-      "id": "2.04",
-      "body_system": "Special Senses (Hearing)",
-      "name": "Hearing Loss",
-      "keywords": ["deaf", "deafness", "hearing loss", "hearing impairment", "can't hear", "cochlear implant", "hard of hearing"],
-      "required_evidence": [
-        "Audiometric testing showing hearing loss at listing-level thresholds",
-        "Word recognition score of 40% or less in the better ear",
-        "OR cochlear implant (considered disabled for 1 year post-implant)",
-        "ENT or audiology treatment records"
-      ],
-      "description": "Hearing loss not treated with cochlear implantation, with average air conduction hearing thresholds and word recognition scores at listing levels."
-    },
-    {
-      "id": "11.02_convulsive",
-      "body_system": "Neurological",
-      "name": "Epilepsy — Generalized Tonic-Clonic Seizures",
-      "keywords": ["grand mal seizures", "tonic-clonic seizures", "convulsions", "generalized seizures", "epilepsy convulsive"],
-      "required_evidence": [
-        "EEG and/or detailed seizure documentation",
-        "Evidence of generalized tonic-clonic seizures occurring at least once a month for 3+ consecutive months despite treatment",
-        "Documentation of medication compliance and blood levels",
-        "Neurologist treatment records"
-      ],
-      "description": "Generalized tonic-clonic epilepsy (grand mal) occurring at least once a month for at least 3 consecutive months, despite adherence to prescribed treatment."
-    },
-    {
-      "id": "12.10",
-      "body_system": "Mental Disorders",
-      "name": "Eating Disorders",
-      "keywords": ["anorexia", "anorexia nervosa", "bulimia", "bulimia nervosa", "eating disorder", "binge eating"],
-      "required_evidence": [
-        "Documentation of persistent disturbance in eating behavior that significantly alters body weight",
-        "Medical records showing BMI below normal or medical complications",
-        "Evidence of marked limitation in at least two functional areas",
-        "Psychiatric/psychological treatment records"
-      ],
-      "description": "Eating disorders with persistent alteration in eating or eating-related behavior that substantially changes body weight, with marked limitation in functioning."
-    },
-    {
-      "id": "1.20",
-      "body_system": "Musculoskeletal",
-      "name": "Amputation (due to any cause)",
-      "keywords": ["amputation", "lost leg", "lost arm", "lost hand", "missing leg", "missing arm", "missing hand", "limb loss", "loss of limb", "lost limb", "lost feet"],
-      "required_evidence": [
-        "Medical documentation of the amputation surgery or physical impairment",
-        "Evidence of inability to walk effectively (e.g. needing a walker, crutches, or bilateral canes) OR inability to perform fine/gross movements with an upper extremity",
-        "Prosthetic treatment records and evaluation of the effectiveness of the prosthetic device",
-        "Treatment history showing limitations persist despite rehabilitation"
-      ],
-      "description": "Amputation of one or both lower extremities, or one or both upper extremities, resulting in significant difficulty walking or performing manual tasks."
     }
   ]
 }
