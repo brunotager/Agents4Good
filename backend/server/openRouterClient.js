@@ -65,6 +65,12 @@ async function callLLM(systemPrompt, userMessage, options = {}) {
 
       if (!response.ok) {
         const errorBody = await response.text();
+        if (response.status === 400 && jsonMode && body.response_format) {
+          console.warn('⚠️ JSON mode not supported by this model. Retrying without response_format...');
+          delete body.response_format;
+          attempt--; // Retry this attempt immediately without response_format
+          continue;
+        }
         throw new Error(`LLM API error ${response.status}: ${errorBody}`);
       }
 
