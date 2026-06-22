@@ -91,7 +91,7 @@ const PHASE_CONFIG = {
     requiredFields: ['jobs_last_15_years'],
     conditionalFields: {},
     nextPhase: 'STEP4_DAILY_ACTIVITIES',
-    initialQuestion: "Tell me about your most recent job. What was the title, and what kind of work did you do?"
+    initialQuestion: "To complete your application, I need to list your jobs from the last 15 years. Let's start with your most recent one: what was your job title, and what kind of work did you do?"
   },
   STEP4_DAILY_ACTIVITIES: {
     section: 'section_c_daily_activities',
@@ -282,7 +282,7 @@ const FOLLOW_UP_QUESTIONS = {
   'education_level': "What is the highest level of education you completed?",
 
   // STEP4_WORK_HISTORY
-  'jobs_last_15_years': "Tell me about your most recent job. What was the title, and what kind of work did you do?",
+  'jobs_last_15_years': "To complete your application, I need to list your jobs from the last 15 years. Let's start with your most recent one: what was your job title, and what kind of work did you do?",
 
   // STEP4_DAILY_ACTIVITIES
   'daily_routine': "Walk me through a typical day. What do you do from the time you wake up until you go to bed?",

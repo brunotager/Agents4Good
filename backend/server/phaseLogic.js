@@ -67,7 +67,7 @@ const PHASE_CONFIG = {
     requiredFields: ['jobs_last_15_years'],
     conditionalFields: {},
     nextPhase: 'STEP4_DAILY_ACTIVITIES',
-    initialQuestion: "Tell me about your most recent job. What was the title, and what kind of work did you do?"
+    initialQuestion: "To complete your application, I need to list your jobs from the last 15 years. Let's start with your most recent one: what was your job title, and what kind of work did you do?"
   },
   STEP4_DAILY_ACTIVITIES: {
     section: 'section_c_daily_activities',
@@ -230,7 +230,7 @@ const FOLLOW_UP_QUESTIONS = {
   'conditions': "What medical conditions prevent you from working? Please list all of them — physical and mental.",
   'age': "How old are you?",
   'education_level': "What is the highest level of education you completed?",
-  'jobs_last_15_years': "Tell me about your most recent job. What was the title, and what kind of work did you do?",
+  'jobs_last_15_years': "To complete your application, I need to list your jobs from the last 15 years. Let's start with your most recent one: what was your job title, and what kind of work did you do?",
   'daily_routine': "Walk me through a typical day. What do you do from the time you wake up until you go to bed?",
   'affected_abilities': "How does your condition limit what you can do physically and mentally? For example, how far can you walk before you need to rest?"
 };
