@@ -258,8 +258,35 @@ module.exports = cors(async (req, res) => {
     }
 
     // Step 1.5: Check if the parser got the expected answer
+    const PHASE_VALID_FIELDS = {
+      STEP1_SGA: ['currently_working', 'work_type', 'hours_per_week', 'monthly_earnings', 'last_date_worked', 'reason_stopped_working', 'employer_name'],
+      STEP2_SEVERITY: ['condition_expected_to_last_12_months', 'condition_duration_months', 'basic_work_activities_affected', 'severity_explanation'],
+      STEP3_CONDITIONS: ['conditions', 'work_limitations', 'primary_condition'],
+      STEP4_DEMOGRAPHICS: ['claimant_name', 'age', 'date_of_birth', 'education_level', 'literacy', 'english_proficiency'],
+      STEP4_WORK_HISTORY: ['job', 'jobs_last_15_years', 'last_date_worked', 'reason_stopped', 'has_more_jobs'],
+      STEP4_DAILY_ACTIVITIES: ['daily_routine', 'care_for_others', 'care_for_others_details', 'care_for_pets', 'sleep_affected', 'sleep_details', 'personal_care_no_problem', 'dress_limitations', 'bathe_limitations', 'prepares_meals', 'meal_types', 'chores_can_do', 'chores_help_needed', 'goes_outside_frequency', 'drives', 'hobbies_interests', 'can_no_longer_do'],
+      STEP4_ABILITIES: ['affected_abilities', 'ability_explanations', 'dominant_hand', 'walk_distance_before_rest', 'attention_span', 'finishes_what_started', 'follows_written_instructions', 'follows_spoken_instructions', 'handles_routine_changes', 'assistive_devices', 'unusual_behaviors_or_fears', 'unusual_behaviors_details'],
+      STEP5_VOCATIONAL: ['transferable_skills', 'education_level', 'literacy', 'english_proficiency']
+    };
+
+    const validFields = PHASE_VALID_FIELDS[phase] || [];
+    let gotExpectedAnswer = Object.keys(extractedFields).some(key => {
+      if (!validFields.includes(key)) return false;
+      const val = extractedFields[key];
+      if (val === null || val === undefined || val === '') return false;
+      if (Array.isArray(val) && val.length === 0) return false;
+      return true;
+    });
+
+    if (phase === 'STEP3_CONDITIONS') {
+      const existing = session.form_data.section_b_conditions?.conditions || [];
+      const noMore = /^(no|nope|nah|that'?s? ?(all|it|everything)|nothing else|none|just that|only that)\b/i.test(userMessage.trim());
+      if (existing.length > 0 && noMore) {
+        gotExpectedAnswer = true;
+      }
+    }
+
     const missingFieldsBefore = getMissingFields(phase, session.form_data);
-    const gotExpectedAnswer = Object.keys(extractedFields).some(key => missingFieldsBefore.includes(key));
 
     if (!gotExpectedAnswer && missingFieldsBefore.length > 0) {
       // Parser did not get the expected answer — send to LLM
@@ -290,7 +317,18 @@ module.exports = cors(async (req, res) => {
     if (config.section && Object.keys(extractedFields).length > 0) {
       if (phase === 'STEP4_WORK_HISTORY' && extractedFields.job) {
         const currentJobs = session.form_data.section_work_history?.jobs_last_15_years || [];
-        extractedFields.jobs_last_15_years = [...currentJobs, extractedFields.job];
+        if (currentJobs.length > 0 && !extractedFields.job.title) {
+          // Merge details into the last job in history (supporting follow-up question updates)
+          const lastIdx = currentJobs.length - 1;
+          currentJobs[lastIdx] = {
+            ...currentJobs[lastIdx],
+            ...extractedFields.job
+          };
+          extractedFields.jobs_last_15_years = currentJobs;
+        } else {
+          // Append as a new job
+          extractedFields.jobs_last_15_years = [...currentJobs, extractedFields.job];
+        }
         delete extractedFields.job;
       }
       if (phase === 'STEP4_ABILITIES' && extractedFields.affected_abilities) {
