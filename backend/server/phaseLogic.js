@@ -250,9 +250,26 @@ function buildFollowUpQuestion(phase, formData, missingFields, extractedFields) 
 
 // ── Fast keyword-based extraction for simple phases ──
 
-function extractSGA(msg) {
+function extractSGA(msg, session) {
   const lower = msg.toLowerCase();
   const result = {};
+
+  // First, check if we have a pending earnings confirmation from the previous turn
+  if (session && session.form_data && session.form_data.meta && session.form_data.meta.pending_earnings_value) {
+    const pendingVal = session.form_data.meta.pending_earnings_value;
+    const isConfirmation = /^(yes|yeah|yep|yup|correct|right|confirm|indeed|that'?s? ?right|per month|a month|monthly)/i.test(msg.trim()) ||
+                           (lower.includes('yes') || lower.includes('month') || lower.includes('correct'));
+    const isDenial = /^(no|nope|nah|wrong|hours)/i.test(msg.trim()) || lower.includes('hour') || lower.includes('no ');
+
+    if (isConfirmation && !isDenial) {
+      result.monthly_earnings = pendingVal;
+      result._clear_pending_earnings = true;
+      return result;
+    } else {
+      // User denied or gave other info, clear the pending state and proceed with normal extraction
+      result._clear_pending_earnings = true;
+    }
+  }
 
   const notWorkingPatterns = [
     /^(no|nope|nah|not really|negative|no way)\b/,
@@ -297,23 +314,36 @@ function extractSGA(msg) {
   const rawDollarMatch = lower.match(/\$\s*([\d,]+)/);
   const plainNumberMatch = lower.match(/\b([\d,]+)\b/);
 
+  let extractedEarnings = null;
+  let isSure = false;
+
   if (monthlyMatch) {
-    result.monthly_earnings = parseInt(monthlyMatch[1].replace(/,/g, ''));
+    extractedEarnings = parseInt(monthlyMatch[1].replace(/,/g, ''));
+    isSure = true;
   } else if (weeklyMatch) {
-    result.monthly_earnings = Math.round(parseInt(weeklyMatch[1].replace(/,/g, '')) * 4.33);
+    extractedEarnings = Math.round(parseInt(weeklyMatch[1].replace(/,/g, '')) * 4.33);
+    isSure = true;
   } else if (rawDollarMatch) {
-    result.monthly_earnings = parseInt(rawDollarMatch[1].replace(/,/g, ''));
+    extractedEarnings = parseInt(rawDollarMatch[1].replace(/,/g, ''));
   } else if (plainNumberMatch) {
     const val = parseInt(plainNumberMatch[1].replace(/,/g, ''));
-    if (val >= 100) {
-      result.monthly_earnings = val;
+    extractedEarnings = val;
+  }
+
+  if (extractedEarnings !== null) {
+    // If the value is very low (< 100) and we are not sure (e.g. didn't specify "per month"),
+    // ask for confirmation to avoid misinterpreting it.
+    if (extractedEarnings < 100 && !isSure) {
+      result._pending_earnings_value = extractedEarnings;
+    } else {
+      result.monthly_earnings = extractedEarnings;
     }
   }
 
-  // Try to extract hours (supporting ranges like 2-4 and not requiring "week")
+  // Try to extract hours (supporting ranges like 5-8 averaging to 6.5, not rounded to 7)
   const hoursRangeMatch = lower.match(/(\d+)\s*(?:-|to)\s*(\d+)\s*(?:hours?|hrs?)/);
   if (hoursRangeMatch) {
-    result.hours_per_week = Math.round((parseInt(hoursRangeMatch[1]) + parseInt(hoursRangeMatch[2])) / 2);
+    result.hours_per_week = (parseInt(hoursRangeMatch[1]) + parseInt(hoursRangeMatch[2])) / 2;
   } else {
     const hoursMatch = lower.match(/(\d+)\s*(?:hours?|hrs?)/);
     if (hoursMatch) {
@@ -321,12 +351,13 @@ function extractSGA(msg) {
     } else {
       const rangeMatch = lower.match(/(\d+)\s*(?:-|to)\s*(\d+)/);
       if (rangeMatch) {
-        result.hours_per_week = Math.round((parseInt(rangeMatch[1]) + parseInt(rangeMatch[2])) / 2);
+        result.hours_per_week = (parseInt(rangeMatch[1]) + parseInt(rangeMatch[2])) / 2;
       } else {
         const numberMatch = lower.match(/\b(\d+)\b/);
         if (numberMatch) {
           const num = parseInt(numberMatch[1]);
-          if (num > 0 && num <= 100) {
+          // Only map to hours if we didn't extract this number as an earnings confirmation or pending earnings
+          if (num > 0 && num <= 100 && result._pending_earnings_value === undefined && result.monthly_earnings === undefined) {
             result.hours_per_week = num;
           }
         }

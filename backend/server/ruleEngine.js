@@ -43,7 +43,7 @@ function evaluateSeverity(activitiesAffected = [], durationMonths, expectedToLas
 
 // ── STEP 3: BLUE BOOK MATCHING ───────────────────────────────
 
-function matchBlueBook(conditions = []) {
+async function matchBlueBook(conditions = []) {
   if (!conditions.length) {
     return {
       matched_listing_id: null,
@@ -56,35 +56,66 @@ function matchBlueBook(conditions = []) {
     };
   }
 
-  const conditionsLower = conditions.map(c => c.toLowerCase());
-  let bestMatch = null;
-  let bestScore = 0;
+  let matchedListingId = null;
+  let matchConfidence = 'none';
 
-  for (const listing of blueBookData.listings) {
-    let score = 0;
-    for (const keyword of listing.keywords) {
-      for (const condition of conditionsLower) {
-        if (condition.includes(keyword) || keyword.includes(condition)) {
-          score += 2;
-        } else {
-          // Partial word match
-          const words = keyword.split(' ');
-          for (const word of words) {
-            if (word.length > 3 && condition.includes(word)) {
-              score += 1;
+  try {
+    const { getBlueBookMatcherPrompt } = require('./agentPrompts');
+    const { extractFields } = require('./geminiClient');
+    
+    const prompt = getBlueBookMatcherPrompt(conditions, blueBookData.listings);
+    const result = await extractFields(prompt, `Conditions: ${conditions.join(', ')}`);
+    
+    if (result && result.matched_listing_id) {
+      matchedListingId = result.matched_listing_id;
+      matchConfidence = result.match_confidence || 'moderate';
+    }
+  } catch (err) {
+    console.error('LLM Blue Book matching failed, falling back to keyword matcher:', err.message);
+  }
+
+  let bestMatch = null;
+  if (matchedListingId) {
+    bestMatch = blueBookData.listings.find(l => l.id === matchedListingId);
+  }
+
+  // Fallback to keyword matching if LLM failed or couldn't find a match
+  if (!bestMatch) {
+    const conditionsLower = conditions.map(c => c.toLowerCase());
+    let bestScore = 0;
+
+    for (const listing of blueBookData.listings) {
+      let score = 0;
+      for (const keyword of listing.keywords) {
+        for (const condition of conditionsLower) {
+          if (condition.includes(keyword) || keyword.includes(condition)) {
+            score += 2;
+          } else {
+            // Partial word match
+            const words = keyword.split(' ');
+            for (const word of words) {
+              if (word.length > 3 && condition.includes(word)) {
+                score += 1;
+              }
             }
           }
         }
       }
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = listing;
+      }
     }
 
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = listing;
+    if (bestMatch && bestScore >= 2) {
+      matchConfidence = bestScore >= 4 ? 'high' : 'moderate';
+    } else {
+      bestMatch = null;
     }
   }
 
-  if (!bestMatch || bestScore < 2) {
+  if (!bestMatch) {
     return {
       matched_listing_id: null,
       matched_listing_name: null,
@@ -96,13 +127,11 @@ function matchBlueBook(conditions = []) {
     };
   }
 
-  const confidence = bestScore >= 4 ? 'high' : 'moderate';
-
   return {
     matched_listing_id: bestMatch.id,
     matched_listing_name: bestMatch.name,
     body_system: bestMatch.body_system,
-    match_confidence: confidence,
+    match_confidence: matchConfidence,
     evidence_checklist: bestMatch.required_evidence.map(item => ({
       item,
       has_evidence: false,
@@ -253,7 +282,7 @@ function evaluateGridRules(age, educationLevel, rfcLevel, transferableSkills = [
 
 // ── COMPOSITE ELIGIBILITY ASSESSMENT ─────────────────────────
 
-function computeEligibility(formData) {
+async function computeEligibility(formData) {
   const assessment = {
     step1_sga: 'needs_info',
     step2_severity: 'needs_info',
@@ -315,7 +344,7 @@ function computeEligibility(formData) {
   // ── Step 3: Blue Book ──
   const conditions = (formData.section_b_conditions || {}).conditions || [];
   if (conditions.length > 0) {
-    const blueBook = matchBlueBook(conditions);
+    const blueBook = await matchBlueBook(conditions);
     if (blueBook.match_confidence === 'high') {
       assessment.step3_listing = 'meets';
       score += 20;

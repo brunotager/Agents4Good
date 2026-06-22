@@ -47,7 +47,13 @@ async function createSession() {
       meta: {
         form_id: 'SSA-3373-BK',
         version: '02-2024',
-        created_at: now
+        created_at: now,
+        messages: [
+          {
+            role: 'assistant',
+            content: "Hi, I'm Anna. I'm here to help you navigate the Social Security Disability application.\n\nBefore we start filling out forms, let me ask a few quick questions to make sure you qualify.\n\nAre you currently working at any job, even part-time or occasional work?"
+          }
+        ]
       },
       section_sga: {},
       section_severity: {},
@@ -181,7 +187,7 @@ async function getEligibility(token) {
   const session = await getSession(token);
   if (!session) return null;
 
-  const assessment = computeEligibility(session.form_data);
+  const assessment = await computeEligibility(session.form_data);
 
   // Store the assessment
   await updateSession(token, {

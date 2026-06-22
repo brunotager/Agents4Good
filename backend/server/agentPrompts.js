@@ -193,10 +193,64 @@ Examples: "Noted. Not currently working.", "Work history saved.", "Your back pai
 Respond with ONLY the label text.`;
 }
 
+// ── GLOBAL OFF-TOPIC FALLBACK PROMPT ────────────────────────
+function getOffTopicPrompt(conversationHistory, activeQuestion) {
+  return `${AGENT_PERSONA}
+
+The user has asked a question, made an off-topic comment, or expressed a concern instead of answering the form question we asked.
+
+Here is the conversation history so far:
+${conversationHistory}
+
+The question we are currently trying to get them to answer:
+"${activeQuestion}"
+
+Your instructions:
+1. Warmly and humanly acknowledge their comment, question, or concern.
+2. Directly answer their question or address their concern using simple, plain language (6th grade level).
+3. Smoothly guide the conversation back and repeat or rephrase the active question, asking them to answer it.
+4. Keep your entire response short (2-4 sentences maximum).
+5. Respond with ONLY the message text to the user. Do not include any JSON or metadata.`;
+}
+
+// ── BLUE BOOK MATCHER PROMPT ────────────────────────────────
+function getBlueBookMatcherPrompt(conditions, listings) {
+  const simplifiedListings = listings.map(l => ({
+    id: l.id,
+    name: l.name,
+    body_system: l.body_system,
+    keywords: l.keywords
+  }));
+
+  return `You are an expert system that matches medical conditions to the official Social Security Administration (SSA) Blue Book Listings.
+
+The applicant has reported the following medical conditions:
+${JSON.stringify(conditions)}
+
+Here is the list of available SSA Blue Book listings:
+${JSON.stringify(simplifiedListings)}
+
+Your task is to identify the best match for the applicant's conditions from the available Blue Book listings.
+A match is "high" confidence if one of the reported conditions is a direct match or well-established synonym of the listing name/keywords.
+A match is "moderate" confidence if the condition is related or likely falls under the category, but is less specific.
+If the conditions do not relate to any listings, return null for matched_listing_id and "none" for match_confidence.
+
+Return ONLY a JSON object:
+{
+  "matched_listing_id": "string or null",
+  "match_confidence": "high" | "moderate" | "none"
+}
+
+Do not include any explanation or other text.`;
+}
+
 module.exports = {
   AGENT_PERSONA,
   EXTRACTION_PROMPTS,
   getQuestionPrompt,
   getBlueBookRecommendationPrompt,
-  getSynthesisPrompt
+  getSynthesisPrompt,
+  getOffTopicPrompt,
+  getBlueBookMatcherPrompt
 };
+

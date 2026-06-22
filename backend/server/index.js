@@ -8,7 +8,7 @@ const cors = require('cors');
 
 const { createSession, getSession, updateSession, getEligibility } = require('./sessionStore');
 const { extractFields, generateResponse } = require('./geminiClient');
-const { EXTRACTION_PROMPTS, getQuestionPrompt, getBlueBookRecommendationPrompt, getSynthesisPrompt } = require('./agentPrompts');
+const { EXTRACTION_PROMPTS, getQuestionPrompt, getBlueBookRecommendationPrompt, getSynthesisPrompt, getOffTopicPrompt } = require('./agentPrompts');
 const { matchBlueBook, evaluateSGA, evaluateGridRules, getAgeCategory } = require('./ruleEngine');
 
 const app = express();
@@ -555,6 +555,25 @@ app.post('/api/session/start', async (req, res) => {
   }
 });
 
+// ── Helper to save assistant message & return API response ──
+
+async function sendAgentResponse(res, token, session, responseData) {
+  const { agentMessage, synthesisLabel, nextPhase, progressUpdate, inputHint } = responseData;
+
+  const messages = (session.form_data && session.form_data.meta && session.form_data.meta.messages) || [];
+  messages.push({ role: 'assistant', content: agentMessage });
+
+  await updateSession(token, { form_data: { meta: { messages } } });
+
+  return res.json({
+    agentMessage,
+    synthesisLabel,
+    nextPhase,
+    progressUpdate,
+    inputHint
+  });
+}
+
 // ── Process Turn ──
 
 app.post('/api/agent/turn', async (req, res) => {
@@ -574,29 +593,51 @@ app.post('/api/agent/turn', async (req, res) => {
       return res.status(400).json({ error: `Unknown phase: ${phase}` });
     }
 
+    // Append user message to history
+    const messages = (session.form_data && session.form_data.meta && session.form_data.meta.messages) || [];
+    messages.push({ role: 'user', content: userMessage });
+    await updateSession(token, { form_data: { meta: { messages } } });
+
     // ── Special phases that don't need LLM extraction ──
 
+    if (phase === 'MFA_PHONE') {
+      const phone = userMessage.replace(/[^\d+\-() ]/g, '').trim();
+      const updatedSession = await updateSession(token, {
+        form_data: { section_a_general: { phone_number: phone || userMessage } },
+        current_phase: 'MFA_CODE',
+        sub_step: 0
+      });
+      const nextConfig = PHASE_CONFIG['MFA_CODE'];
+      return sendAgentResponse(res, token, updatedSession, {
+        agentMessage: nextConfig.initialQuestion,
+        synthesisLabel: "Phone number saved.",
+        nextPhase: 'MFA_CODE',
+        progressUpdate: calculateProgress(updatedSession.form_data),
+        inputHint: { label: '6-Digit Code', placeholder: 'e.g. 123456', disabled: false }
+      });
+    }
+
     if (phase === 'MFA_CODE') {
-      await updateSession(token, { current_phase: 'MEDICAL_RELEASE', sub_step: 0 });
+      const updatedSession = await updateSession(token, { current_phase: 'MEDICAL_RELEASE', sub_step: 0 });
       const nextConfig = PHASE_CONFIG['MEDICAL_RELEASE'];
-      return res.json({
+      return sendAgentResponse(res, token, updatedSession, {
         agentMessage: nextConfig.initialQuestion,
         synthesisLabel: "Identity securely verified.",
         nextPhase: 'MEDICAL_RELEASE',
-        progressUpdate: calculateProgress(session.form_data),
+        progressUpdate: calculateProgress(updatedSession.form_data),
         inputHint: { label: 'Awaiting Signature', placeholder: '', disabled: true }
       });
     }
 
     if (phase === 'MEDICAL_RELEASE') {
       if (userMessage.startsWith('__SIGNED__')) {
-        await updateSession(token, { current_phase: 'STEP3_CONDITIONS', sub_step: 0 });
+        const updatedSession = await updateSession(token, { current_phase: 'STEP3_CONDITIONS', sub_step: 0 });
         const nextConfig = PHASE_CONFIG['STEP3_CONDITIONS'];
-        return res.json({
+        return sendAgentResponse(res, token, updatedSession, {
           agentMessage: nextConfig.initialQuestion,
           synthesisLabel: "Medical Release SSA-827 signed securely.",
           nextPhase: 'STEP3_CONDITIONS',
-          progressUpdate: calculateProgress(session.form_data),
+          progressUpdate: calculateProgress(updatedSession.form_data),
           inputHint: { label: 'Your Conditions', placeholder: 'e.g. Back pain, depression', disabled: false }
         });
       }
@@ -604,8 +645,8 @@ app.post('/api/agent/turn', async (req, res) => {
     }
 
     if (phase === 'APPLICATION_REVIEW') {
-      await updateSession(token, { current_phase: 'APPLICATION_COMPLETE', sub_step: 0 });
-      return res.json({
+      const updatedSession = await updateSession(token, { current_phase: 'APPLICATION_COMPLETE', sub_step: 0 });
+      return sendAgentResponse(res, token, updatedSession, {
         agentMessage: "Your application has been submitted for review. Thank you for your patience throughout this process.",
         synthesisLabel: "Application Complete",
         nextPhase: 'APPLICATION_COMPLETE',
@@ -615,7 +656,7 @@ app.post('/api/agent/turn', async (req, res) => {
     }
 
     if (phase === 'APPLICATION_COMPLETE') {
-      return res.json({
+      return sendAgentResponse(res, token, session, {
         agentMessage: "You have already completed the application.",
         synthesisLabel: "Application Complete",
         nextPhase: 'APPLICATION_COMPLETE',
@@ -633,9 +674,8 @@ app.post('/api/agent/turn', async (req, res) => {
     let inputHint = { label: 'Your Answer', placeholder: '', disabled: false };
 
     // Step 1: Extract fields from user message
-    // Use fast keyword extraction for simple phases, LLM for complex ones
     if (phase === 'STEP1_SGA') {
-      extractedFields = extractSGA(userMessage);
+      extractedFields = extractSGA(userMessage, session);
     } else if (phase === 'STEP2_SEVERITY') {
       extractedFields = extractSeverity(userMessage);
     } else {
@@ -657,6 +697,56 @@ app.post('/api/agent/turn', async (req, res) => {
     }
     console.log(`[${phase}] Extracted:`, JSON.stringify(extractedFields));
 
+    // Handle clearing/pending of earnings confirmation state
+    if (extractedFields._clear_pending_earnings) {
+      await updateSession(token, { form_data: { meta: { pending_earnings_value: null } } });
+      delete extractedFields._clear_pending_earnings;
+    }
+
+    if (extractedFields._pending_earnings_value !== undefined) {
+      const pendingVal = extractedFields._pending_earnings_value;
+      const updatedSession = await updateSession(token, { form_data: { meta: { pending_earnings_value: pendingVal } } });
+
+      const agentMessage = `Just to confirm, did you mean that you earn $${pendingVal} per month?`;
+      const progress = calculateProgress(updatedSession.form_data);
+      return sendAgentResponse(res, token, updatedSession, {
+        agentMessage,
+        synthesisLabel: undefined,
+        nextPhase: phase,
+        progressUpdate: progress,
+        inputHint: { label: 'Confirm Earnings', placeholder: 'e.g. Yes, that\'s correct', disabled: false }
+      });
+    }
+
+    // Step 1.5: Check if the parser got the expected answer
+    const missingFieldsBefore = getMissingFields(phase, session.form_data);
+    const gotExpectedAnswer = Object.keys(extractedFields).some(key => missingFieldsBefore.includes(key));
+
+    if (!gotExpectedAnswer && missingFieldsBefore.length > 0) {
+      // Parser did not get the expected answer — send to LLM
+      const messagesHistory = (session.form_data && session.form_data.meta && session.form_data.meta.messages) || [];
+      const assistantMessages = messagesHistory.filter(m => m.role === 'assistant');
+      const activeQuestion = assistantMessages.length > 0
+        ? assistantMessages[assistantMessages.length - 1].content
+        : config.initialQuestion || '';
+
+      const formattedHistory = messagesHistory
+        .map(m => `${m.role === 'user' ? 'User' : 'Anna'}: ${m.content}`)
+        .join('\n');
+
+      const offTopicPrompt = getOffTopicPrompt(formattedHistory, activeQuestion);
+      const fallbackMessage = await generateResponse(offTopicPrompt, userMessage);
+
+      const progress = calculateProgress(session.form_data);
+      return sendAgentResponse(res, token, session, {
+        agentMessage: fallbackMessage,
+        synthesisLabel: undefined,
+        nextPhase: phase,
+        progressUpdate: progress,
+        inputHint
+      });
+    }
+
     // Step 2: Update session with extracted fields
     if (config.section && Object.keys(extractedFields).length > 0) {
       // Handle special cases
@@ -675,7 +765,7 @@ app.post('/api/agent/turn', async (req, res) => {
     }
 
     // Refresh session after update
-    const updatedSession = await getSession(token);
+    let updatedSession = await getSession(token);
     const formData = updatedSession.form_data;
 
     // Step 3: Generate synthesis label LOCALLY (no LLM call needed)
@@ -706,12 +796,12 @@ app.post('/api/agent/turn', async (req, res) => {
       const sev = formData.section_severity || {};
       if (sev.condition_expected_to_last_12_months === false) {
         nextPhase = 'ELIGIBILITY_REJECT';
-        await updateSession(token, { current_phase: nextPhase, sub_step: 0 });
-        return res.json({
+        updatedSession = await updateSession(token, { current_phase: nextPhase, sub_step: 0 });
+        return sendAgentResponse(res, token, updatedSession, {
           agentMessage: "The SSA requires conditions to last at least 12 months. Based on what you've told me, your condition may not meet this requirement.\n\nIf your condition worsens or your doctor's prognosis changes, you can reapply. I recommend discussing this with your doctor.",
           synthesisLabel: "Duration requirement not met.",
           nextPhase,
-          progressUpdate: calculateProgress(formData),
+          progressUpdate: calculateProgress(updatedSession.form_data),
           inputHint: { label: 'Application Paused', placeholder: '', disabled: true }
         });
       }
@@ -722,8 +812,8 @@ app.post('/api/agent/turn', async (req, res) => {
       // Special handling for Blue Book phase
       if (phase === 'STEP3_CONDITIONS') {
         const conditions = formData.section_b_conditions?.conditions || [];
-        const blueBookMatch = matchBlueBook(conditions);
-        await updateSession(token, {
+        const blueBookMatch = await matchBlueBook(conditions);
+        updatedSession = await updateSession(token, {
           form_data: { section_blue_book: blueBookMatch },
           current_phase: 'STEP3_BLUE_BOOK',
           sub_step: 0
@@ -752,6 +842,15 @@ app.post('/api/agent/turn', async (req, res) => {
         const demoConfig = PHASE_CONFIG['STEP4_DEMOGRAPHICS'];
         agentMessage += `\n\nNow let me collect some background information. ${demoConfig.initialQuestion}`;
         inputHint = { label: 'Your Age', placeholder: 'e.g. 58', disabled: false };
+
+        updatedSession = await getSession(token);
+        return sendAgentResponse(res, token, updatedSession, {
+          agentMessage,
+          synthesisLabel,
+          nextPhase,
+          progressUpdate: calculateProgress(updatedSession.form_data),
+          inputHint
+        });
       }
       // Grid Rules result
       else if (phase === 'STEP5_VOCATIONAL') {
@@ -763,7 +862,7 @@ app.post('/api/agent/turn', async (req, res) => {
           voc.age, voc.education_level, rfc.rfc_level, voc.transferable_skills
         );
 
-        await updateSession(token, {
+        updatedSession = await updateSession(token, {
           form_data: {
             section_vocational: {
               grid_rule_result: gridResult.grid_rule_result,
@@ -778,12 +877,20 @@ app.post('/api/agent/turn', async (req, res) => {
         agentMessage = gridResult.grid_rule_explanation + "\n\n" + PHASE_CONFIG['APPLICATION_REVIEW'].initialQuestion;
         nextPhase = 'APPLICATION_REVIEW';
         inputHint = { label: 'Submit Application', placeholder: 'e.g. Yes', disabled: false };
+
+        return sendAgentResponse(res, token, updatedSession, {
+          agentMessage,
+          synthesisLabel,
+          nextPhase,
+          progressUpdate: calculateProgress(updatedSession.form_data),
+          inputHint
+        });
       }
       // Normal phase advancement
       else {
         nextPhase = config.nextPhase;
         const nextConfig = PHASE_CONFIG[nextPhase];
-        await updateSession(token, { current_phase: nextPhase, sub_step: 0 });
+        updatedSession = await updateSession(token, { current_phase: nextPhase, sub_step: 0 });
 
         if (nextConfig?.initialQuestion) {
           agentMessage = nextConfig.initialQuestion;
@@ -797,6 +904,14 @@ app.post('/api/agent/turn', async (req, res) => {
         } else if (nextPhase === 'MEDICAL_RELEASE') {
           inputHint = { label: 'Awaiting Signature', placeholder: '', disabled: true };
         }
+
+        return sendAgentResponse(res, token, updatedSession, {
+          agentMessage,
+          synthesisLabel,
+          nextPhase,
+          progressUpdate: calculateProgress(updatedSession.form_data),
+          inputHint
+        });
       }
     } else if (!agentMessage) {
       // Still in the same phase — ask for missing info using direct follow-up
@@ -804,8 +919,7 @@ app.post('/api/agent/turn', async (req, res) => {
     }
 
     const progress = calculateProgress(formData);
-
-    res.json({
+    return sendAgentResponse(res, token, updatedSession, {
       agentMessage,
       synthesisLabel: synthesisLabel || undefined,
       nextPhase,
